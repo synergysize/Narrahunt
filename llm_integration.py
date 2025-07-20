@@ -33,35 +33,39 @@ logger = logging.getLogger('llm_integration')
 load_dotenv()
 
 # LLM API Keys loaded from environment
-CLAUDE_API_KEY = get_api_key('CLAUDE_API_KEY')
-OPENAI_API_KEY = get_api_key('OPENAI_API_KEY')
+CLAUDE_API_KEY = get_api_key('CLAUDE_API_KEY') or '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'
+OPENAI_API_KEY = get_api_key('OPENAI_API_KEY') or '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'
+GOOGLE_API_KEY = get_api_key('GOOGLE_API_KEY') or 'AIzaSyAa__kXU5Nr63Kzgzfl8hXpRG2rAX8JGHM'
 
 class LLMIntegration:
     """
     Provides integration with LLM services for content analysis and enhancement.
     """
     
-    def __init__(self, use_claude: bool = True, use_openai: bool = False):
+    def __init__(self, use_claude: bool = True, use_openai: bool = False, use_gemini: bool = False):
         """
         Initialize the LLM integration module.
         
         Args:
             use_claude: Whether to use Claude as the LLM
             use_openai: Whether to use OpenAI as the LLM
+            use_gemini: Whether to use Google Gemini as the LLM
             
         Raises:
             ValueError: If the selected LLM service API key is not available
         """
         self.use_claude = use_claude
         self.use_openai = use_openai
+        self.use_gemini = use_gemini
         
-        if not use_claude and not use_openai:
+        if not use_claude and not use_openai and not use_gemini:
             logger.warning("No LLM service selected. Defaulting to Claude.")
             self.use_claude = True
         
         # Initialize API keys
         self.claude_api_key = CLAUDE_API_KEY
         self.openai_api_key = OPENAI_API_KEY
+        self.google_api_key = GOOGLE_API_KEY
         
         # Validate that we have the necessary API keys
         if self.use_claude and not self.claude_api_key:
@@ -69,11 +73,14 @@ class LLMIntegration:
         
         if self.use_openai and not self.openai_api_key:
             raise ValueError("OpenAI API key not found. Please add OPENAI_API_KEY to your .env file.")
+            
+        if self.use_gemini and not self.google_api_key:
+            raise ValueError("Google API key not found. Please add GOOGLE_API_KEY to your .env file.")
         
         # Cache for API responses
         self.response_cache = {}
         
-        logger.info(f"LLM Integration initialized. Using Claude: {use_claude}, Using OpenAI: {use_openai}")
+        logger.info(f"LLM Integration initialized. Using Claude: {use_claude}, Using OpenAI: {use_openai}, Using Gemini: {use_gemini}")
     
     def analyze(self, text: str, context: Optional[str] = None) -> Dict[str, Any]:
         """
@@ -119,8 +126,22 @@ Format your response as JSON with these fields.
         # Get response from LLM
         if self.use_claude:
             result = self._call_claude(prompt)
+            # If Claude fails, try backup options
+            if not result or result.strip() == "{}":
+                logger.warning("Claude failed, trying backup LLM")
+                if self.use_openai:
+                    result = self._call_openai(prompt)
+                elif self.use_gemini:
+                    result = self._call_gemini(prompt)
         elif self.use_openai:
             result = self._call_openai(prompt)
+            # If OpenAI fails, try Gemini as backup
+            if not result or result.strip() == "{}":
+                logger.warning("OpenAI failed, trying Gemini as backup")
+                if self.use_gemini:
+                    result = self._call_gemini(prompt)
+        elif self.use_gemini:
+            result = self._call_gemini(prompt)
         else:
             logger.error("No LLM service available")
             return {
@@ -206,6 +227,19 @@ Format your response as JSON with these fields.
                     content = self._repair_incomplete_json(content)
                 
                 return content
+            elif response.status_code == 401:
+                logger.warning(f"Claude authentication failed (401) - automatically falling back to alternative LLM")
+                # If we have OpenAI access, use it as fallback
+                if self.openai_api_key:
+                    logger.info("Falling back to OpenAI")
+                    return self._call_openai(prompt)
+                # If we have Gemini access, use it as secondary fallback
+                elif self.google_api_key:
+                    logger.info("Falling back to Gemini")
+                    return self._call_gemini(prompt)
+                else:
+                    logger.error("No alternative LLM API keys available for fallback")
+                    return "{}"
             else:
                 logger.error(f"Claude API error: {response.status_code} - {response.text}")
                 return "{}"
@@ -270,6 +304,38 @@ Format your response as JSON with these fields.
             logger.error(f"Failed to repair JSON: {e}")
             return json_text  # Return original if repair failed
     
+    def _call_gemini(self, prompt: str) -> str:
+        """
+        Call the Google Gemini API.
+        
+        Args:
+            prompt: The prompt to send to Gemini
+            
+        Returns:
+            Gemini's response text
+        """
+        try:
+            url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+            headers = {"Content-Type": "application/json"}
+            
+            data = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"maxOutputTokens": 1000}
+            }
+            
+            response = requests.post(f"{url}?key={self.google_api_key}", 
+                                   headers=headers, json=data, timeout=30)
+            
+            if response.status_code == 200:
+                result = response.json()
+                return result['candidates'][0]['content']['parts'][0]['text']
+            else:
+                logger.error(f"Gemini API error: {response.status_code} - {response.text}")
+                return "{}"
+        except Exception as e:
+            logger.error(f"Error calling Gemini API: {e}")
+            return "{}"
+            
     def _call_openai(self, prompt: str) -> str:
         """
         Call the OpenAI API.

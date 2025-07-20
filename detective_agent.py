@@ -121,15 +121,8 @@ class DetectiveAgent:
         # Initialize excluded names for auto-filtering
         self.excluded_names = self.entity_aliases.copy()
         
-        # Set priority domains that are likely to contain valuable artifacts
-        self.priority_domains = set([
-            'vitalik.ca',
-            'bitcointalk.org',
-            'github.com',
-            'ethereum.org',
-            'blog.ethereum.org',
-            'ethereum.foundation'
-        ])
+        # Initialize empty set for priority domains (will be populated by LLM strategy)
+        self.priority_domains = set()
         
         self.investigation_history = []
         
@@ -242,6 +235,11 @@ class DetectiveAgent:
         # Get initial research strategy from LLM - now a comprehensive TODO list
         initial_strategy = self._get_initial_research_strategy()
         
+        # If strategy is empty, FAIL IMMEDIATELY:
+        if not initial_strategy:
+            logger.error("No strategy received from LLM - investigation cannot proceed")
+            return  # Exit immediately
+            
         # Extract initial targets from the strategy
         initial_targets = []
         
@@ -361,7 +359,7 @@ class DetectiveAgent:
         
         # Custom prompt for generating a comprehensive research TODO list
         prompt = f"""
-You are a master research strategist planning a focused, methodical investigation of: "{self.objective}"
+GENERATE A RESEARCH STRATEGY NOW. It needs to be a focused, methodical investigation of: "{self.objective}"
 
 MISSION: Create a comprehensive TODO list of ALL potential high-value targets for finding "narrative artifacts" - historical names, code, wallets, or terminology that can create compelling backstories for cryptocurrency token launches. We need a methodical, depth-first exploration strategy.
 
@@ -412,72 +410,89 @@ Please respond with ONLY a JSON object in this exact format:
 {{
     "sources": [
         {{
-            "url": "https://vitalik.ca",
+            "url": "https://example-relevant-site.com",
             "priority": 10,
-            "rationale": "Primary personal blog with technical writings dating back to 2013",
-            "potential_artifacts": ["early project names", "wallet addresses", "unpublished ideas"]
+            "rationale": "Explanation of why this source is valuable for the investigation",
+            "potential_artifacts": ["type of artifact 1", "type of artifact 2", "type of artifact 3"]
         }}
     ],
     "github_targets": [
         {{
-            "url": "https://github.com/vbuterin/ethereum",
+            "url": "https://github.com/username/repository",
             "priority": 9,
-            "rationale": "Original Ethereum repository with early commits and code",
-            "potential_artifacts": ["test addresses", "contract snippets", "prototype names"]
+            "rationale": "Explanation of why this repository might contain valuable information",
+            "potential_artifacts": ["code snippets", "test values", "prototype identifiers"]
         }}
     ],
     "wayback_targets": [
         {{
-            "url": "https://ethereum.org",
+            "url": "https://historical-example.org",
             "priority": 8,
-            "years": [2014, 2015, 2016],
-            "rationale": "Early Ethereum website versions with potential keys, test addresses",
-            "potential_artifacts": ["test wallet keys", "original branding elements", "early team members"]
+            "years": [2020, 2021, 2022],
+            "rationale": "Explanation of why historical versions of this site matter",
+            "potential_artifacts": ["historical data", "early design elements", "team information"]
         }}
     ],
     "search_queries": [
         {{
-            "query": "Vitalik Buterin early projects before Ethereum",
+            "query": "Example search query related to investigation",
             "priority": 7,
-            "rationale": "Find pre-Ethereum projects that might contain valuable artifacts",
-            "potential_artifacts": ["project names", "usernames", "collaboration details"]
+            "rationale": "Why this search query would yield useful results",
+            "potential_artifacts": ["discoverable information 1", "discoverable information 2", "connections"]
         }}
     ],
     "forum_targets": [
         {{
-            "url": "https://bitcointalk.org/index.php?action=profile;u=11772",
+            "url": "https://example-forum.org/user/profile",
             "priority": 10,
-            "rationale": "Vitalik's Bitcoin forum profile with early crypto discussions",
-            "potential_artifacts": ["early opinions", "forgotten predictions", "username variations"]
+            "rationale": "Why checking this forum profile would be valuable",
+            "potential_artifacts": ["early discussions", "shared insights", "username patterns"]
         }}
     ],
     "key_time_periods": [
         {{
-            "period": "2011-2013",
-            "description": "Bitcoin Magazine and early crypto involvement",
+            "period": "2020-2021",
+            "description": "Early project development phase",
             "priority": 9
         }},
         {{
-            "period": "2013-2015",
-            "description": "Ethereum conception and launch",
+            "period": "2022-2023",
+            "description": "Critical project milestones",
             "priority": 10
         }}
     ]
 }}
 
+DO NOT ASK FOR CLARIFICATIONS.  YOU MUST RESPOND WITH THE RESEARCH STRATEGY IN JSON FORM ONLY. 
 Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of ALL potential targets, not just a few examples.
 """
         
-        # Use alternating LLM for this call
+        # Try Claude first
         llm = self._get_llm_instance()
+        result = None
         
         if llm.use_claude:
             result = llm._call_claude(prompt)
-        elif llm.use_openai:
-            result = llm._call_openai(prompt)
-        else:
-            logger.error("No LLM service available")
-            result = "{}"
+            
+        # If Claude failed, try OpenAI
+        if not result or result.strip() == "{}":
+            logger.warning("Claude failed, trying OpenAI as backup")
+            try:
+                backup_llm = LLMIntegration(use_claude=False, use_openai=True)
+                result = backup_llm._call_openai(prompt)
+            except Exception as e:
+                logger.warning(f"OpenAI also failed: {str(e)}")
+                result = None
+                
+        # If both Claude and OpenAI failed, try Gemini
+        if not result or result.strip() == "{}":
+            logger.warning("Claude and OpenAI failed, trying Gemini as final backup")
+            try:
+                gemini_llm = LLMIntegration(use_claude=False, use_openai=False, use_gemini=True)
+                result = gemini_llm._call_gemini(prompt)
+            except Exception as e:
+                logger.error(f"All LLM services failed. Gemini error: {str(e)}")
+                result = "{}"
         
         # Extract JSON from the response
         try:
@@ -530,19 +545,24 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
         logger.info(f"Forum targets: {len(strategy.get('forum_targets', []))} items")
         logger.info(f"Key time periods: {len(strategy.get('key_time_periods', []))} items")
         
-        # If strategy is empty or missing critical components, return empty strategy
+        # If strategy is empty or missing critical components, log error and raise exception
         if (not strategy.get('sources') and 
             not strategy.get('search_queries') and 
             not strategy.get('github_targets') and
             not strategy.get('wayback_targets')):
             logger.error("LLM strategy generation failed - no targets to investigate")
-            return {}
+            # Raise exception instead of returning empty dictionary
+            raise Exception("LLM strategy generation failed - cannot proceed without valid strategy")
         
         return strategy
     
     def _execute_investigation(self, target: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Execute an investigation on a target.
+        Execute an investigation on a target, implementing proper depth-first exploration.
+        
+        This method ensures complete exploration of a domain before moving to the next one,
+        by extracting all links from the current domain and adding them to the queue with
+        the same priority as the current target.
         
         Args:
             target: The investigation target
@@ -552,20 +572,86 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
         """
         target_type = target.get('type', 'unknown')
         
+        # Set current focus target for depth-first exploration
+        if target_type in ['website', 'github', 'wayback']:
+            domain = self._extract_domain(target.get('url', ''))
+            if domain and not hasattr(self, 'current_focus_target'):
+                self.current_focus_target = domain
+                logger.info(f"Setting current focus target to: {self.current_focus_target}")
+            elif domain and self.current_focus_target != domain:
+                # Only switch focus if the current domain is exhausted
+                if self._is_target_exhausted(self.current_focus_target):
+                    logger.info(f"Switching focus target from {self.current_focus_target} to {domain}")
+                    self.current_focus_target = domain
+        
+        # Track the target as partially explored until we've exhausted all related links
+        target['exploration_status'] = 'partially_explored'
+        
+        # Execute the appropriate investigation method based on target type
+        discoveries = []
         if target_type == 'website':
-            return self._investigate_website(target)
+            discoveries = self._investigate_website(target)
         elif target_type == 'search':
-            return self._execute_search(target)
+            discoveries = self._execute_search(target)
         elif target_type == 'wayback':
-            return self._investigate_wayback(target)
+            discoveries = self._investigate_wayback(target)
         elif target_type == 'github':
-            return self._investigate_github(target)
+            discoveries = self._investigate_github(target)
         else:
             logger.warning(f"Unknown target type: {target_type}")
             return []
+            
+        # Check if this domain is now fully exhausted
+        if target_type in ['website', 'github', 'wayback']:
+            domain = self._extract_domain(target.get('url', ''))
+            if domain and self._is_target_exhausted(domain):
+                logger.info(f"Domain {domain} is now fully explored")
+                # Update all targets from this domain to mark them as fully explored
+                for completed_target in self.research_strategy.completed_targets:
+                    if completed_target.get('type') in ['website', 'github', 'wayback']:
+                        if self._extract_domain(completed_target.get('url', '')) == domain:
+                            completed_target['exploration_status'] = 'fully_explored'
+                
+                # If this was our current focus, we need to choose a new focus
+                if self.current_focus_target == domain:
+                    self.current_focus_target = None
+                    
+        return discoveries
     
+    def _is_target_exhausted(self, domain: str) -> bool:
+        """
+        Check if a target domain has been fully explored (no more URLs from that domain in queue).
+        
+        Args:
+            domain: The domain name to check
+            
+        Returns:
+            True if the domain is exhausted (no more URLs in queue), False otherwise
+        """
+        # Check if there are any URLs from this domain in the research queue
+        for target in self.research_queue:
+            if target.get('type') in ['website', 'github', 'wayback']:
+                target_domain = self._extract_domain(target.get('url', ''))
+                if target_domain == domain:
+                    # Found at least one URL from this domain in queue
+                    return False
+        
+        # No URLs from this domain in queue
+        return True
+        
     def _investigate_website(self, target: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Investigate a website target."""
+        """
+        Investigate a website target and extract all links from that domain for further investigation.
+        
+        This implements proper depth-first exploration by finding all links from the current domain
+        and adding them to the queue with the same priority as the current target.
+        
+        Args:
+            target: The website target to investigate
+            
+        Returns:
+            List of discoveries from this website
+        """
         url = target.get('url')
         
         if not url:
@@ -583,6 +669,9 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
         
         logger.info(f"Investigating website: {url}")
         self.investigated_urls.add(url)
+        
+        # Get the domain for focused exploration
+        target_domain = self._extract_domain(url)
         
         # Crawl the website
         try:
@@ -612,13 +701,57 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
             # Process the artifacts into discoveries
             discoveries = self._process_artifacts(artifacts, url)
             
+            # Determine site type and perform deep investigation if needed
+            site_type = self._detect_site_type(final_url, html_content)
+            logger.info(f"Detected site type for {final_url}: {site_type}")
+            
+            if site_type == 'forum':
+                logger.info(f"Performing deep forum investigation for {final_url}")
+                deep_discoveries = self._investigate_forum_deeply(final_url, html_content)
+                if deep_discoveries:
+                    logger.info(f"Found {len(deep_discoveries)} additional discoveries from deep forum investigation")
+                    discoveries.extend(deep_discoveries)
+            elif site_type == 'blog':
+                logger.info(f"Performing deep blog investigation for {final_url}")
+                deep_discoveries = self._investigate_blog_deeply(final_url, html_content)
+                if deep_discoveries:
+                    logger.info(f"Found {len(deep_discoveries)} additional discoveries from deep blog investigation")
+                    discoveries.extend(deep_discoveries)
+            
+            # Extract links from the page for depth-first exploration using improved deduplication
+            new_targets = []
+            current_priority = target.get('priority', 5)
+            
+            # Use our improved link extraction method with built-in deduplication
+            same_domain_links = self._extract_same_domain_links(html_content, final_url)
+            
+            # Create targets from the deduplicated links
+            for full_url in same_domain_links:
+                # Create unique target ID for deduplication in queue
+                target_id = f"website:{self._normalize_url_for_deduplication(full_url)}"
+                
+                new_targets.append({
+                    'url': full_url,
+                    'type': 'website',
+                    'id': target_id,  # Add ID for queue deduplication
+                    'priority': current_priority,
+                    'rationale': f'Same-domain link from {url} - depth-first exploration',
+                    'use_wayback': target.get('use_wayback', False)
+                })
+            
+            logger.info(f"Found {len(same_domain_links)} new links from domain {self._extract_domain(final_url)}")
+            
+            # Add the new targets to the research queue
+            if new_targets:
+                self._update_research_queue(new_targets)
+            
             # If use_wayback is enabled, also check historical versions
             if target.get('use_wayback', False) and not url.startswith('https://web.archive.org/'):
                 # Add wayback investigation to the queue with lower priority
                 self._update_research_queue([{
                     'url': url,
                     'type': 'wayback',
-                    'priority': target.get('priority', 5) - 2,
+                    'priority': current_priority - 2,  # Lower priority than direct links
                     'rationale': f'Historical investigation of {url}',
                     'year_range': target.get('year_range', (2013, datetime.datetime.now().year))
                 }])
@@ -846,8 +979,231 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
             logger.error(f"Error executing search for {query}: {str(e)}")
             return []
     
+    def _extract_github_repo_info(self, url: str) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Parse GitHub URLs to extract owner and repository name.
+        
+        Args:
+            url: GitHub URL to parse
+            
+        Returns:
+            Tuple of (owner, repository) or (None, None) if not a valid repository URL
+        """
+        # Try to extract owner and repo from the URL
+        github_repo_pattern = r'github\.com[/:]([^/]+)/([^/]+)'
+        match = re.search(github_repo_pattern, url)
+        
+        if not match:
+            logger.warning(f"Could not extract repository info from GitHub URL: {url}")
+            return None, None
+            
+        owner = match.group(1)
+        repo = match.group(2)
+        
+        # Clean up the repository name (remove .git suffix if present)
+        if repo.endswith('.git'):
+            repo = repo[:-4]
+            
+        # Handle potential query parameters or trailing slashes
+        if '?' in repo:
+            repo = repo.split('?')[0]
+        if '#' in repo:
+            repo = repo.split('#')[0]
+            
+        logger.info(f"Extracted GitHub repository: {owner}/{repo}")
+        return owner, repo
+        
+    def _investigate_github_files(self, owner: str, repo: str) -> List[Dict[str, Any]]:
+        """
+        Investigate GitHub repository files for artifacts.
+        
+        Args:
+            owner: Repository owner/organization
+            repo: Repository name
+            
+        Returns:
+            List of discoveries
+        """
+        discoveries = []
+        
+        # GitHub raw content base URL
+        base_raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/master"
+        base_raw_url_main = f"https://raw.githubusercontent.com/{owner}/{repo}/main"
+        
+        # Common files to check for name artifacts
+        important_files = [
+            'README.md',
+            'README.rst',
+            'CONTRIBUTORS.md',
+            'CONTRIBUTORS',
+            'AUTHORS',
+            'AUTHORS.md',
+            'package.json',
+            'setup.py',
+            'Cargo.toml',
+            'pyproject.toml',
+            'LICENSE',
+            'CHANGELOG.md',
+            'HISTORY.md',
+            'docs/index.md',
+            'docs/README.md',
+            '.github/FUNDING.yml'
+        ]
+        
+        # Try to fetch each important file
+        for file_path in important_files:
+            # Try main branch first (newer repositories)
+            content = None
+            url = f"{base_raw_url_main}/{file_path}"
+            
+            try:
+                logger.info(f"Checking GitHub file: {url}")
+                content, response_info = fetch_page(url)
+                source_url = url
+                
+                if not content:
+                    # Try master branch if main fails (older repositories)
+                    url = f"{base_raw_url}/{file_path}"
+                    logger.info(f"Checking GitHub file: {url}")
+                    content, response_info = fetch_page(url)
+                    source_url = url
+                    
+                    if not content:
+                        logger.info(f"GitHub file not found: {file_path}")
+                        continue  # Try next file instead of erroring
+            except Exception as e:
+                logger.error(f"Error fetching GitHub file {file_path}: {str(e)}")
+                continue
+                
+            if content:
+                # Extract artifacts from file content
+                try:
+                    file_type = file_path.split('.')[-1].lower() if '.' in file_path else 'txt'
+                    
+                    # Extract artifacts based on file type
+                    if file_type in ['md', 'rst', 'txt']:
+                        # Markdown/text files often contain project descriptions, contributor lists
+                        artifacts = artifact_detector.extract_artifacts(content, context=f"GitHub {file_path}")
+                    elif file_type in ['json', 'toml', 'py']:
+                        # Configuration files often contain project metadata
+                        artifacts = artifact_detector.extract_artifacts(content, context=f"GitHub config {file_path}")
+                    else:
+                        # General case
+                        artifacts = artifact_detector.extract_artifacts(content, context=f"GitHub file {file_path}")
+                    
+                    # Process the artifacts
+                    file_discoveries = self._process_artifacts(artifacts, source_url)
+                    
+                    # Add file-specific metadata
+                    for discovery in file_discoveries:
+                        discovery['github_file'] = file_path
+                        discovery['github_repo'] = f"{owner}/{repo}"
+                    
+                    discoveries.extend(file_discoveries)
+                    logger.info(f"Found {len(file_discoveries)} artifacts in {file_path}")
+                except Exception as e:
+                    logger.error(f"Error extracting artifacts from {file_path}: {str(e)}")
+        
+        # Fetch and analyze commits for contributor names and references
+        self._investigate_github_commits(owner, repo, discoveries)
+        
+        # Fetch and analyze issues for discussions (more likely to contain name artifacts)
+        self._investigate_github_issues(owner, repo, discoveries)
+        
+        return discoveries
+        
+    def _investigate_github_commits(self, owner: str, repo: str, discoveries: List[Dict[str, Any]]) -> None:
+        """
+        Investigate GitHub commit history for artifacts.
+        
+        Args:
+            owner: Repository owner/organization
+            repo: Repository name
+            discoveries: List to append new discoveries to
+        """
+        # Commits URL
+        commits_url = f"https://github.com/{owner}/{repo}/commits"
+        
+        try:
+            logger.info(f"Fetching GitHub commits: {commits_url}")
+            content, response_info = fetch_page(commits_url)
+            
+            if content:
+                # Extract commit messages and authors from the HTML
+                commit_pattern = r'<a class="commit-title.*?>(.*?)</a>.*?<a class="commit-author.*?>(.*?)</a>'
+                matches = re.findall(commit_pattern, content, re.DOTALL)
+                
+                commit_text = "\n".join([f"Commit by {author.strip()}: {message.strip()}" 
+                                        for message, author in matches])
+                
+                # Extract artifacts from commit history
+                if commit_text:
+                    artifacts = artifact_detector.extract_artifacts(
+                        commit_text, context=f"GitHub commits for {owner}/{repo}")
+                    
+                    commit_discoveries = self._process_artifacts(artifacts, commits_url)
+                    
+                    # Add commit-specific metadata
+                    for discovery in commit_discoveries:
+                        discovery['github_source'] = 'commits'
+                        discovery['github_repo'] = f"{owner}/{repo}"
+                    
+                    discoveries.extend(commit_discoveries)
+                    logger.info(f"Found {len(commit_discoveries)} artifacts in commit history")
+        except Exception as e:
+            logger.error(f"Error investigating commits for {owner}/{repo}: {str(e)}")
+    
+    def _investigate_github_issues(self, owner: str, repo: str, discoveries: List[Dict[str, Any]]) -> None:
+        """
+        Investigate GitHub issues for artifacts.
+        
+        Args:
+            owner: Repository owner/organization
+            repo: Repository name
+            discoveries: List to append new discoveries to
+        """
+        # Issues URL
+        issues_url = f"https://github.com/{owner}/{repo}/issues"
+        
+        try:
+            logger.info(f"Fetching GitHub issues: {issues_url}")
+            content, response_info = fetch_page(issues_url)
+            
+            if content:
+                # Extract issue titles and authors from the HTML
+                issue_pattern = r'<a class="Link--primary v-align-middle.*?>(.*?)</a>.*?opened by.*?<a.*?>(.*?)</a>'
+                matches = re.findall(issue_pattern, content, re.DOTALL)
+                
+                issue_text = "\n".join([f"Issue by {author.strip()}: {title.strip()}" 
+                                      for title, author in matches])
+                
+                # Extract artifacts from issues
+                if issue_text:
+                    artifacts = artifact_detector.extract_artifacts(
+                        issue_text, context=f"GitHub issues for {owner}/{repo}")
+                    
+                    issue_discoveries = self._process_artifacts(artifacts, issues_url)
+                    
+                    # Add issue-specific metadata
+                    for discovery in issue_discoveries:
+                        discovery['github_source'] = 'issues'
+                        discovery['github_repo'] = f"{owner}/{repo}"
+                    
+                    discoveries.extend(issue_discoveries)
+                    logger.info(f"Found {len(issue_discoveries)} artifacts in issues")
+        except Exception as e:
+            logger.error(f"Error investigating issues for {owner}/{repo}: {str(e)}")
+    
     def _investigate_github(self, target: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Investigate a GitHub repository or user."""
+        """
+        Investigate a GitHub repository in depth.
+        
+        Args:
+            target: Target dictionary containing the URL and other metadata
+            
+        Returns:
+            List of discoveries
+        """
         github_url = target.get('url')
         
         if not github_url:
@@ -858,12 +1214,28 @@ Return ONLY the JSON object, no other text. Make this a COMPREHENSIVE list of AL
             logger.info(f"GitHub URL already investigated: {github_url}")
             return []
         
-        logger.info(f"Investigating GitHub: {github_url}")
+        logger.info(f"Investigating GitHub repository: {github_url}")
         self.investigated_urls.add(github_url)
         
-        # For now, treat GitHub URLs as regular websites
-        # In a full implementation, we would use the GitHub API
-        return self._investigate_website({'url': github_url, 'type': 'website'})
+        # Extract owner and repo from the URL
+        owner, repo = self._extract_github_repo_info(github_url)
+        
+        # If we couldn't extract owner/repo, fall back to treating it as a regular website
+        if not owner or not repo:
+            logger.warning(f"Could not parse GitHub URL: {github_url}. Treating as regular website.")
+            return self._investigate_website({'url': github_url, 'type': 'website'})
+        
+        # Investigate the GitHub repository files
+        discoveries = self._investigate_github_files(owner, repo)
+        
+        # Also investigate the main GitHub page for additional context
+        website_discoveries = self._investigate_website({'url': github_url, 'type': 'website'})
+        
+        # Combine discoveries from both sources
+        all_discoveries = discoveries + website_discoveries
+        
+        logger.info(f"Found {len(all_discoveries)} total artifacts in GitHub repository {owner}/{repo}")
+        return all_discoveries
     
     def _process_artifacts(self, artifacts: List[Dict[str, Any]], source_url: str,
                           is_wayback: bool = False, original_url: str = None) -> List[Dict[str, Any]]:
@@ -1139,13 +1511,32 @@ Be specific, not generic. Use exact URLs and search terms tailored to our object
         
         # Call the LLM with alternating models
         try:
-            # Use our alternating LLM functionality
+            # Try Claude first
             llm = self._get_llm_instance()
+            response = None
             
             if llm.use_claude:
                 response = llm._call_claude(prompt)
-            else:
-                response = llm._call_openai(prompt)
+                
+            # If Claude failed, try OpenAI
+            if not response or response.strip() == "{}":
+                logger.warning("Claude failed, trying OpenAI as backup")
+                try:
+                    backup_llm = LLMIntegration(use_claude=False, use_openai=True)
+                    response = backup_llm._call_openai(prompt)
+                except Exception as e:
+                    logger.warning(f"OpenAI also failed: {str(e)}")
+                    response = None
+                    
+            # If both Claude and OpenAI failed, try Gemini
+            if not response or response.strip() == "{}":
+                logger.warning("Claude and OpenAI failed, trying Gemini as final backup")
+                try:
+                    gemini_llm = LLMIntegration(use_claude=False, use_openai=False, use_gemini=True)
+                    response = gemini_llm._call_gemini(prompt)
+                except Exception as e:
+                    logger.error(f"All LLM services failed. Gemini error: {str(e)}")
+                    response = "{}"
                 
             json_str = llm._extract_json(response)
             suggestions = json.loads(json_str)
@@ -1282,13 +1673,32 @@ Be creative and specific. Think of sources we haven't tried yet.
         
         # Call the LLM with alternating models
         try:
-            # Use our alternating LLM functionality
+            # Try Claude first
             llm = self._get_llm_instance()
+            response = None
             
             if llm.use_claude:
                 response = llm._call_claude(prompt)
-            else:
-                response = llm._call_openai(prompt)
+                
+            # If Claude failed, try OpenAI
+            if not response or response.strip() == "{}":
+                logger.warning("Claude failed, trying OpenAI as backup")
+                try:
+                    backup_llm = LLMIntegration(use_claude=False, use_openai=True)
+                    response = backup_llm._call_openai(prompt)
+                except Exception as e:
+                    logger.warning(f"OpenAI also failed: {str(e)}")
+                    response = None
+                    
+            # If both Claude and OpenAI failed, try Gemini
+            if not response or response.strip() == "{}":
+                logger.warning("Claude and OpenAI failed, trying Gemini as final backup")
+                try:
+                    gemini_llm = LLMIntegration(use_claude=False, use_openai=False, use_gemini=True)
+                    response = gemini_llm._call_gemini(prompt)
+                except Exception as e:
+                    logger.error(f"All LLM services failed. Gemini error: {str(e)}")
+                    return  # If all LLMs fail, we can't generate new leads
                 
             json_str = llm._extract_json(response)
             suggestions = json.loads(json_str)
@@ -1371,7 +1781,13 @@ Be creative and specific. Think of sources we haven't tried yet.
         """
         # Filter out targets that have already been investigated
         filtered_targets = []
+        
+        # Track target IDs and URLs we've already seen in the queue to prevent duplicates
+        queue_target_ids = {target.get('id') for target in self.research_queue if target.get('id')}
+        queue_urls = {target.get('url') for target in self.research_queue if target.get('url')}
+        
         for target in new_targets:
+            # Skip targets that have already been investigated
             if target.get('type') == 'website' and target.get('url') in self.investigated_urls:
                 continue
             if target.get('type') == 'wayback' and f"wayback:{target.get('url')}" in self.investigated_urls:
@@ -1380,7 +1796,28 @@ Be creative and specific. Think of sources we haven't tried yet.
                 continue
             if target.get('type') == 'github' and target.get('url') in self.investigated_urls:
                 continue
-            
+                
+            # Check for duplicates in the queue based on ID
+            target_id = target.get('id')
+            if target_id and target_id in queue_target_ids:
+                logger.debug(f"Skipping duplicate target ID: {target_id}")
+                continue
+                
+            # Check for duplicates in the queue based on URL
+            url = target.get('url')
+            if url:
+                normalized_url = self._normalize_url_for_deduplication(url)
+                if normalized_url in queue_urls:
+                    logger.debug(f"Skipping duplicate URL: {url}")
+                    continue
+                # Add normalized URL to prevent future duplicates
+                queue_urls.add(normalized_url)
+                
+            # If target doesn't have an ID yet, create one
+            if not target_id and target.get('type') == 'website' and url:
+                target['id'] = f"website:{self._normalize_url_for_deduplication(url)}"
+                
+            # If we got here, this is a new target we should investigate
             filtered_targets.append(target)
         
         # Add new targets to both research strategy and legacy queue
@@ -1391,7 +1828,7 @@ Be creative and specific. Think of sources we haven't tried yet.
         self.research_queue.sort(key=lambda x: x.get('priority', 0), reverse=True)
         
         # Log the additions
-        logger.info(f"Added {len(filtered_targets)} new targets to the research strategy")
+        logger.info(f"Added {len(filtered_targets)} new targets to the research strategy (filtered out {len(new_targets) - len(filtered_targets)} duplicates)")
         
         # Log strategy status
         strategy_status = self.research_strategy.get_status()
@@ -1399,31 +1836,74 @@ Be creative and specific. Think of sources we haven't tried yet.
     
     def _get_next_investigation_target(self) -> Optional[Dict[str, Any]]:
         """
-        Get the next investigation target using the focused research strategy.
-        This replaces the old queue-based approach with a prioritized strategy.
+        Get the next investigation target using focused, depth-first exploration.
+        
+        This method implements proper focus-driven exploration by:
+        1. Sorting research_queue by priority (highest first)
+        2. Returning the highest priority target that matches the current focus target
+        3. If no matching targets, starting a new focus on the highest priority target
+        
+        Returns:
+            The next target to investigate, or None if no targets are available
         """
-        # Get the next target from the research strategy
-        target = self.research_strategy.get_next_target()
-        
-        if not target:
+        if not self.research_queue:
             return None
+            
+        # Sort the research queue by priority (highest first)
+        self.research_queue.sort(key=lambda x: x.get('priority', 0), reverse=True)
         
-        # Log the target selection with priority information
-        logger.info(f"Selected target: {target.get('type')} - " +
-                   (f"{target.get('url')}" if target.get('type') in ['website', 'wayback', 'github'] else
-                    f"{target.get('query')}" if target.get('type') == 'search' else "Unknown") +
-                   f" (Priority: {target.get('priority', 'unknown')})")
+        # If we have a current focus target, prioritize targets from that domain
+        if hasattr(self, 'current_focus_target') and self.current_focus_target:
+            # Check if the current focus is exhausted
+            if self._is_target_exhausted(self.current_focus_target):
+                logger.info(f"Current focus target {self.current_focus_target} is exhausted, selecting new focus")
+                self.current_focus_target = None
+            else:
+                # Find targets that match our current focus domain
+                for target in self.research_queue:
+                    if target.get('type') in ['website', 'github', 'wayback']:
+                        domain = self._extract_domain(target.get('url', ''))
+                        if domain == self.current_focus_target:
+                            # Found a target matching our current focus
+                            self.research_queue.remove(target)
+                            
+                            # Log the target selection with priority information
+                            logger.info(f"Selected target (matching focus {self.current_focus_target}): {target.get('type')} - " +
+                                       (f"{target.get('url')}" if target.get('type') in ['website', 'wayback', 'github'] else
+                                        f"{target.get('query')}" if target.get('type') == 'search' else "Unknown") +
+                                       f" (Priority: {target.get('priority', 'unknown')})")
+                            
+                            # If the target has a rationale, log it
+                            if 'rationale' in target:
+                                logger.info(f"Investigation rationale: {target['rationale']}")
+                                
+                            return target
         
-        # If the target has a rationale, log it
-        if 'rationale' in target:
-            logger.info(f"Investigation rationale: {target['rationale']}")
-        
-        # For backward compatibility, update the research_queue
-        # This is to maintain compatibility with methods that expect the queue to be updated
-        if target not in self.research_queue:
-            self.research_queue = [target]
-        
-        return target
+        # If we don't have a focus target or couldn't find matching targets, pick the highest priority one
+        if self.research_queue:
+            target = self.research_queue[0]
+            self.research_queue.remove(target)
+            
+            # If this is a website/github/wayback target, set it as our new focus
+            if target.get('type') in ['website', 'github', 'wayback']:
+                domain = self._extract_domain(target.get('url', ''))
+                if domain:
+                    self.current_focus_target = domain
+                    logger.info(f"Setting new focus target to: {self.current_focus_target}")
+            
+            # Log the target selection with priority information
+            logger.info(f"Selected target (highest priority): {target.get('type')} - " +
+                       (f"{target.get('url')}" if target.get('type') in ['website', 'wayback', 'github'] else
+                        f"{target.get('query')}" if target.get('type') == 'search' else "Unknown") +
+                       f" (Priority: {target.get('priority', 'unknown')})")
+            
+            # If the target has a rationale, log it
+            if 'rationale' in target:
+                logger.info(f"Investigation rationale: {target['rationale']}")
+                
+            return target
+            
+        return None
     
     def _should_continue_investigation(self) -> bool:
         """Determine if the investigation should continue."""
@@ -1491,9 +1971,8 @@ Be creative and specific. Think of sources we haven't tried yet.
             discovery: The discovery to check
             
         Returns:
-            True if it's a duplicate, False otherwise
+            True if it is a duplicate, False otherwise
         """
-        # Get the discovery type
         discovery_type = discovery.get('type', 'unknown')
         
         # Check ID for exact matches (faster check first)
@@ -1509,7 +1988,6 @@ Be creative and specific. Think of sources we haven't tried yet.
         if discovery_content:
             # Use type-specific normalization
             normalized_content = self._normalize_content(discovery_content, content_type=discovery_type)
-            
             # Fast lookup in the set of normalized contents
             if normalized_content and normalized_content in self.unique_discovery_contents:
                 logger.info(f"Duplicate discovery detected (content match): {discovery_content[:50]}... [{discovery_type}]")
@@ -1611,29 +2089,24 @@ Be creative and specific. Think of sources we haven't tried yet.
             if not valid_format:
                 return False
             
-            # Skip vitalik.ca direct URLs (DNS fails)
-            if result.netloc == 'vitalik.ca' and not 'web.archive.org' in url:
-                logger.warning(f"Skipping vitalik.ca direct URL (use Wayback instead): {url}")
-                return False
+            # No hardcoded domain-specific checks
             
-            # Skip generic GitHub pages that never contain artifacts
-            if result.netloc == 'github.com':
-                skip_paths = [
-                    '/login', '/signup', '/features', '/team', '/enterprise',
-                    '/pricing', '/about', '/site', '/security', '/codespaces',
-                    '/topics', '/collections', '/trending', '/copilot'
-                ]
-                
-                for skip_path in skip_paths:
-                    if result.path.startswith(skip_path):
-                        logger.warning(f"Skipping generic GitHub page: {url}")
-                        return False
+            # Check for generic pages without domain-specific hardcoding
+            skip_paths = [
+                '/login', '/signup', '/features', '/team', '/enterprise',
+                '/pricing', '/about', '/site', '/security', '/codespaces',
+                '/topics', '/collections', '/trending', '/copilot'
+            ]
             
-            # Skip generic marketing/feature pages
-            if 'features' in url or 'pricing' in url or 'about-us' in url or 'contact' in url:
-                if not ('vitalik' in url.lower() or 'buterin' in url.lower()):
-                    logger.warning(f"Skipping generic marketing page: {url}")
+            for skip_path in skip_paths:
+                if result.path.startswith(skip_path):
+                    logger.warning(f"Skipping generic page: {url}")
                     return False
+            
+            # Skip generic marketing/feature pages without specific name checks
+            if 'features' in url or 'pricing' in url or 'about-us' in url or 'contact' in url:
+                logger.warning(f"Skipping generic marketing page: {url}")
+                return False
             
             return True
             
@@ -1650,6 +2123,218 @@ Be creative and specific. Think of sources we haven't tried yet.
             return domain_match.group(1)
         
         return None
+        
+    def _detect_site_type(self, url: str, html_content: str) -> str:
+        """
+        Detect the type of website based on URL patterns and content.
+        
+        Args:
+            url: The URL of the website
+            html_content: The HTML content of the website
+            
+        Returns:
+            Site type ('forum', 'blog', 'documentation', 'personal_site', or 'generic')
+        """
+        url_lower = url.lower()
+        
+        # Identify content types based on generic patterns only, without hardcoded domains
+        if '/forum' in url_lower or '/thread' in url_lower or '/discussion' in url_lower:
+            return 'forum'
+        elif 'blog.' in url_lower or '/blog' in url_lower or '/article' in url_lower:
+            return 'blog'
+        elif 'docs.' in url_lower or 'documentation' in url_lower or '/docs/' in url_lower:
+            return 'documentation'
+        elif '/personal' in url_lower or '/about' in url_lower:
+            return 'personal_site'
+        else:
+            return 'generic'
+            
+    def _investigate_forum_deeply(self, url: str, html_content: str) -> List[Dict[str, Any]]:
+        """
+        Investigate forum-type sites deeply by following thread links.
+        
+        Args:
+            url: The URL of the forum
+            html_content: The HTML content of the forum
+            
+        Returns:
+            List of discoveries from deep investigation
+        """
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        discoveries = []
+        
+        # Generic forum investigation pattern
+        # Try to identify forum thread patterns generically
+        logger.info(f"Deep investigation of forum: {url}")
+        # Extract thread URLs and user profile links using multiple patterns
+        thread_links = soup.find_all('a', href=re.compile(r'topic=\d+|thread|discussion|post'))
+        
+        # Read first 3 threads for content
+        thread_urls = []
+        for link in thread_links[:5]:  # Get 5 links, but limit to 3 unique ones
+            thread_url = urljoin(url, link['href'])
+            # Normalize URL to prevent duplicates
+            normalized_url = self._normalize_url_for_deduplication(thread_url)
+            if normalized_url not in thread_urls and normalized_url not in self.investigated_urls:
+                thread_urls.append(normalized_url)
+                
+        # Investigate up to 3 unique threads
+        for thread_url in thread_urls[:3]:
+            logger.info(f"Investigating forum thread: {thread_url}")
+            thread_html, _ = fetch_page(thread_url)
+            if thread_html:
+                thread_artifacts = artifact_detector.extract_artifacts(thread_html, thread_url, objective=self.objective, entity=self.entity)
+                thread_discoveries = self._process_artifacts(thread_artifacts, thread_url)
+                discoveries.extend(thread_discoveries)
+                self.investigated_urls.add(thread_url)
+        
+        # Generic approach for posts and comments
+        logger.info(f"Looking for post and comment links on: {url}")
+        post_links = soup.find_all('a', href=re.compile(r'/comments/|/post/|/thread/|/discussion/'))
+        
+        # Collect unique post URLs
+        post_urls = []
+        for link in post_links[:5]:  # Get 5 links, but limit to 3 unique ones
+            post_url = urljoin(url, link['href'])
+            # Normalize URL to prevent duplicates
+            normalized_url = self._normalize_url_for_deduplication(post_url)
+            if normalized_url not in post_urls and normalized_url not in self.investigated_urls:
+                post_urls.append(normalized_url)
+        
+        # Read first 3 unique posts
+        for post_url in post_urls[:3]:
+            logger.info(f"Investigating post: {post_url}")
+            post_html, _ = fetch_page(post_url)
+            if post_html:
+                post_artifacts = artifact_detector.extract_artifacts(post_html, post_url, objective=self.objective, entity=self.entity)
+                post_discoveries = self._process_artifacts(post_artifacts, post_url)
+                discoveries.extend(post_discoveries)
+                self.investigated_urls.add(post_url)
+        
+        return discoveries
+        
+    def _investigate_blog_deeply(self, url: str, html_content: str) -> List[Dict[str, Any]]:
+        """
+        Investigate blog-type sites deeply by following article links.
+        
+        Args:
+            url: The URL of the blog
+            html_content: The HTML content of the blog
+            
+        Returns:
+            List of discoveries from deep investigation
+        """
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        discoveries = []
+        
+        logger.info(f"Deep investigation of blog site: {url}")
+        
+        # Find article/post links
+        post_links = soup.find_all('a', href=True)
+        article_urls = []
+        
+        for link in post_links:
+            href = link['href']
+            full_url = urljoin(url, href)
+            
+            # Look for blog post patterns
+            if any(pattern in href for pattern in ['/post/', '/article/', '/blog/', '20']):
+                if self._extract_domain(full_url) == self._extract_domain(url):
+                    # Normalize URL to prevent duplicates
+                    normalized_url = self._normalize_url_for_deduplication(full_url)
+                    article_urls.append(normalized_url)
+        
+        # Remove duplicates while preserving order
+        article_urls = list(dict.fromkeys(article_urls))
+        logger.info(f"Found {len(article_urls)} potential blog post links on {url}")
+        
+        # Read first 5 blog posts
+        for article_url in article_urls[:5]:
+            if article_url not in self.investigated_urls:
+                logger.info(f"Investigating blog article: {article_url}")
+                article_html, _ = fetch_page(article_url)
+                if article_html:
+                    article_artifacts = artifact_detector.extract_artifacts(article_html, article_url, objective=self.objective, entity=self.entity)
+                    article_discoveries = self._process_artifacts(article_artifacts, article_url)
+                    discoveries.extend(article_discoveries)
+                    self.investigated_urls.add(article_url)
+        
+        return discoveries
+        
+    def _extract_same_domain_links(self, html_content: str, base_url: str) -> List[str]:
+        """
+        Extract links from the same domain with efficient deduplication.
+        
+        Args:
+            html_content: HTML content to extract links from
+            base_url: Base URL for resolving relative links
+            
+        Returns:
+            List of unique normalized URLs from the same domain (limited to 5)
+        """
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        links = set()  # Use set instead of list for efficient deduplication
+        base_domain = self._extract_domain(base_url)
+        
+        if not base_domain:
+            logger.warning(f"Could not extract domain from {base_url}")
+            return []
+            
+        logger.info(f"Extracting same-domain links from {base_url} (domain: {base_domain})")
+        
+        for link_tag in soup.find_all('a', href=True):
+            href = link_tag['href']
+            full_url = urljoin(base_url, href)
+            
+            # Skip invalid URLs
+            if not self._is_valid_url(full_url):
+                continue
+                
+            # Normalize URL to prevent duplicates
+            normalized_url = self._normalize_url_for_deduplication(full_url)
+            
+            # Check if same domain and not already investigated
+            if (self._extract_domain(normalized_url) == base_domain and 
+                normalized_url not in self.investigated_urls):
+                links.add(normalized_url)
+        
+        # Convert set to list and limit to 5 links max
+        result = list(links)[:5]
+        logger.info(f"Found {len(links)} unique same-domain links, returning {len(result)} for investigation")
+        return result
+        
+    def _normalize_url_for_deduplication(self, url: str) -> str:
+        """
+        Normalize URL to prevent duplicate URLs with different formats.
+        
+        Args:
+            url: URL to normalize
+            
+        Returns:
+            Normalized URL
+        """
+        from urllib.parse import urlparse, urlunparse
+        
+        try:
+            parsed = urlparse(url)
+            
+            # Remove fragments (#section) and query params (?sort=hot)
+            normalized = urlunparse((
+                parsed.scheme,
+                parsed.netloc,
+                parsed.path.rstrip('/'),  # Remove trailing slashes
+                '',  # Remove params
+                '',  # Remove query
+                ''   # Remove fragment
+            ))
+            
+            return normalized.lower()
+        except Exception as e:
+            logger.warning(f"Error normalizing URL {url}: {str(e)}")
+            return url.lower()
     
     def _should_check_wayback(self, url: str) -> bool:
         """Determine if we should check the Wayback Machine for a URL."""
@@ -1663,26 +2348,10 @@ Be creative and specific. Think of sources we haven't tried yet.
         if domain in self.priority_domains:
             return True
         
-        # Check wayback for high-priority content-rich domains
-        high_value_domains = [
-            'vitalik.ca', 
-            'bitcointalk.org',
-            'blog.ethereum.org',
-            'ethereum.foundation'
-        ]
+        # Only use priority_domains from LLM strategy, no hardcoded domains
         
-        for high_value in high_value_domains:
-            if high_value in domain:
-                return True
-        
-        # Selectively check wayback for other interesting domains
-        # if the URL path suggests user-generated content
-        interesting_domains = {
-            'github.com': ['/vbuterin', '/ethereum', '/ethereum-foundation'],
-            'medium.com': ['/vitalik', '/buterin', '/ethereum'],
-            'twitter.com': ['/vitalikbuterin', '/VitalikButerin', '/ethereumproject'],
-            'reddit.com': ['/user/vbuterin', '/r/ethereum'],
-        }
+        # No selectively checking other domains - rely solely on LLM strategy
+        interesting_domains = {}
         
         for interesting_domain, valuable_paths in interesting_domains.items():
             if interesting_domain in domain:
@@ -1693,9 +2362,7 @@ Be creative and specific. Think of sources we haven't tried yet.
                         return True
                 return False  # Skip other paths for these domains
         
-        # For other domains, only check if they directly reference Vitalik or Ethereum
-        if ('vitalik' in url.lower() or 'buterin' in url.lower()) and 'ethereum' in url.lower():
-            return True
+        # No hardcoded name/project checks - rely entirely on LLM strategy
         
         # By default, don't check wayback to avoid too many requests
         return False
@@ -1827,22 +2494,7 @@ Be creative and specific. Think of sources we haven't tried yet.
         if not url:
             return False
             
-        # Skip common irrelevant domains
-        irrelevant_domains = [
-            'google.com', 
-            'facebook.com', 
-            'twitter.com', 
-            'youtube.com',
-            'instagram.com',
-            'linkedin.com',
-            'amazon.com',
-            'apple.com',
-            'microsoft.com'
-        ]
-        
-        for domain in irrelevant_domains:
-            if domain in url.lower():
-                return False
+        # No hardcoded irrelevant domains - rely on the LLM strategy instead
                 
         # Check if URL is in a priority domain
         for domain in self.priority_domains:
@@ -2035,8 +2687,8 @@ Return ONLY a JSON object with your recommendations in this format:
       "search": -1
     }},
     "domain_priorities": {{
-      "ethereum.org": 10,
-      "github.com": 9
+      "example-high-priority.com": 10,
+      "example-medium-priority.org": 7
     }}
   }}
 }}
@@ -2189,13 +2841,32 @@ Write in a professional, analytical tone appropriate for an investigation report
         
         # Call the LLM with alternating models
         try:
-            # Use our alternating LLM functionality
+            # Try Claude first
             llm = self._get_llm_instance()
+            summary = None
             
             if llm.use_claude:
                 summary = llm._call_claude(prompt)
-            else:
-                summary = llm._call_openai(prompt)
+                
+            # If Claude failed, try OpenAI
+            if not summary or summary.strip() == "":
+                logger.warning("Claude failed, trying OpenAI as backup")
+                try:
+                    backup_llm = LLMIntegration(use_claude=False, use_openai=True)
+                    summary = backup_llm._call_openai(prompt)
+                except Exception as e:
+                    logger.warning(f"OpenAI also failed: {str(e)}")
+                    summary = None
+                    
+            # If both Claude and OpenAI failed, try Gemini
+            if not summary or summary.strip() == "":
+                logger.warning("Claude and OpenAI failed, trying Gemini as final backup")
+                try:
+                    gemini_llm = LLMIntegration(use_claude=False, use_openai=False, use_gemini=True)
+                    summary = gemini_llm._call_gemini(prompt)
+                except Exception as e:
+                    logger.error(f"All LLM services failed. Gemini error: {str(e)}")
+                    summary = "Failed to generate investigation summary due to LLM service errors."
                 
             return summary
         except Exception as e:

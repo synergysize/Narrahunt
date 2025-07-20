@@ -1,0 +1,26 @@
+--- llm_integration.py.orig
++++ llm_integration.py
+@@ -36,6 +36,7 @@
+ # Load environment variables
+ load_dotenv()
+ 
++# Use the new API key as fallback
+ # LLM API Keys loaded from environment
+-CLAUDE_API_KEY = get_api_key('CLAUDE_API_KEY')
++CLAUDE_API_KEY = get_api_key('CLAUDE_API_KEY') or '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'
+ OPENAI_API_KEY = get_api_key('OPENAI_API_KEY')
+@@ -197,6 +198,15 @@
+                 
+                 return content
+             else:
++            elif response.status_code == 401:
++                logger.warning(f"Claude authentication failed (401) - automatically falling back to OpenAI")
++                # If we have OpenAI access, use it as fallback
++                if self.openai_api_key:
++                    return self._call_openai(prompt)
++                else:
++                    logger.error("No OpenAI API key available for fallback")
++                    return "{}"
++            else:
+                 logger.error(f"Claude API error: {response.status_code} - {response.text}")
+                 return "{}"
