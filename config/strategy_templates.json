@@ -1,0 +1,77 @@
+{
+  "name": {
+    "prompt": "I'm researching historical names, usernames, project names, or terminology associated with {entity} before their current projects became well-known. What specific sources should I check? What specific search queries should I use? What GitHub repositories, forum usernames, or early blog posts might contain this information?",
+    "sources": [
+      "github.com/{username}",
+      "twitter.com/{twitter_handle}",
+      "{blog_url}",
+      "reddit.com/user/{reddit_username}",
+      "forum.{community}.org/user/{forum_username}",
+      "archive.org/web/*/vitalik.ca/*"
+    ],
+    "search_queries": [
+      "{entity} username before {year}",
+      "{entity} early projects",
+      "{entity} early forum posts",
+      "{entity} before {current_project}",
+      "{entity} old blog",
+      "{entity} previously known as"
+    ]
+  },
+  "wallet": {
+    "prompt": "I'm researching cryptocurrency wallets, addresses, or transactions associated with {entity}. What specific sources should I check for information about their early transactions, wallet addresses, or donation addresses? What specific search queries would help me find this information?",
+    "sources": [
+      "etherscan.io/address/{known_address}",
+      "github.com/{username}",
+      "{blog_url}/donate",
+      "twitter.com/{twitter_handle}",
+      "blockchain.com/explorer"
+    ],
+    "search_queries": [
+      "{entity} ethereum address",
+      "{entity} donation address",
+      "{entity} wallet address",
+      "{entity} crypto transactions",
+      "{entity} early ethereum",
+      "{entity} eth address github"
+    ]
+  },
+  "code": {
+    "prompt": "I'm researching code, repositories, or programming projects associated with {entity} during their early career. What specific GitHub repositories, gists, or code-related sources should I check? What specific search queries would help me find their early code contributions?",
+    "sources": [
+      "github.com/{username}",
+      "github.com/{username}?tab=repositories&type=source&sort=created_asc",
+      "gist.github.com/{username}",
+      "gitlab.com/{username}",
+      "stackoverflow.com/users/{so_username}"
+    ],
+    "search_queries": [
+      "{entity} github first repository",
+      "{entity} early code contributions",
+      "{entity} first commit",
+      "{entity} code before {current_project}",
+      "site:github.com {entity} created:2013-01-01..2016-01-01",
+      "{entity} programming language"
+    ]
+  },
+  "personal": {
+    "prompt": "I'm researching personal information, biographical details, or relationships associated with {entity} during their early career. What specific sources should I check for information about their education, early employment, or personal connections? What specific search queries would help me find this information?",
+    "sources": [
+      "linkedin.com/in/{linkedin_username}",
+      "{blog_url}/about",
+      "twitter.com/{twitter_handle}",
+      "medium.com/@{medium_username}",
+      "archive.org/web/*/{personal_website}/*"
+    ],
+    "search_queries": [
+      "{entity} biography",
+      "{entity} education",
+      "{entity} early career",
+      "{entity} interview",
+      "{entity} background",
+      "{entity} hometown",
+      "{entity} family",
+      "{entity} university"
+    ]
+  }
+}

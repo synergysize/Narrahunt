@@ -1,0 +1,10 @@
+{
+  "crawl_delay": 2,
+  "max_pages": 100,
+  "max_depth": 2,
+  "follow_redirects": true,
+  "respect_robots": true,
+  "user_agent": "NarrahuntBot/2.0 (https://narrahunt.org/bot.html; bot@narrahunt.org)",
+  "timeout": 30,
+  "max_retries": 3
+}

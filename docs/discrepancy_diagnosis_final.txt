@@ -1,0 +1,66 @@
+DISCREPANCY DIAGNOSIS REPORT
+==========================
+
+Objective: Find name artifacts around Vitalik Buterin
+Entity: Vitalik Buterin
+Date: 2025-07-18
+
+SUMMARY OF FINDINGS
+------------------
+The investigation has discovered a critical issue with name artifact processing in the detective agent. While name artifacts are being properly extracted by the specialized name artifact extractor, most of them are not being correctly recorded as discoveries.
+
+DETAILED ANALYSIS
+----------------
+
+1. Artifact Extraction Process
+   - The EnhancedArtifactDetector correctly identifies the name artifacts in the HTML content
+   - The NameArtifactExtractor successfully extracts 45 name artifacts from the GitHub page
+   - All artifacts have appropriate scores (ranging from 0.8 to 1.0)
+   - Extraction pipeline is working as expected
+
+2. Discovery Processing Issues
+   - Most name artifacts are rejected during the _process_artifacts method
+   - Log shows: "DISCOVERY REJECTED ❌ - name/username - 'code' - Score: 0.85 - Reason: Unknown reason (possibly type filtering or field mapping issue)"
+   - Similar rejection messages for other name artifacts with high confidence scores
+
+3. Key Discrepancy Identified
+   - The issue is in the field mapping between the NameArtifactExtractor and the DetectiveAgent
+   - In NameArtifactExtractor (line 111-123), artifacts have:
+     * type: "name"
+     * subtype: e.g., "username", "project_name"
+     * name: The actual name value
+   - But in DetectiveAgent._process_artifacts, it expects:
+     * The 'content' field to contain the value (not 'name')
+   - When creating a discovery (line 633-645), it uses artifact.get('content', '') but the name artifacts store values in 'name' field
+
+4. Duplicate Checking
+   - Duplicate checking is also affected by this field mismatch
+   - The system is looking for duplicates based on 'content' field, not 'name'
+   - This causes inconsistent duplicate detection
+
+5. Field Standardization
+   - There's no standardization of fields between the artifact extractors
+   - Standard artifact_extractor.py uses 'content' field
+   - NameArtifactExtractor uses 'name' field
+
+RECOMMENDED FIX
+--------------
+The most straightforward fix is to modify the _extract_name_artifacts method in enhanced_artifact_detector.py to map the 'name' field to 'content' when standardizing artifacts. 
+
+Change line 114 from:
+```python
+"content": artifact.get("context", ""),
+```
+
+To:
+```python
+"content": artifact.get("name", ""),
+```
+
+This will ensure that the name value is properly mapped to the 'content' field expected by the detective agent.
+
+CONCLUSION
+---------
+The issue is not in the discovery filtering logic but in the inconsistent field naming between the name artifact extractor and the detective agent's processing code. The fix is simple and should not require changes to the core detective agent logic.
+
+Once this field mapping is corrected, name artifacts should be properly recorded as discoveries, as they already have high confidence scores and are passing the extraction stage successfully.

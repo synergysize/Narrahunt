@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM JSON Parsing Fix</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .problem, .solution {
+            background-color: #f9f9f9;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .solution {
+            border-left-color: #2ecc71;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .checklist {
+            list-style-type: none;
+            padding-left: 25px;
+        }
+        .checklist li {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .checklist li:before {
+            content: "✅";
+            position: absolute;
+            left: -25px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detective Agent LLM Response Parsing Fix</h1>
+    
+    <h2>Problem Overview</h2>
+    <div class="problem">
+        <p>The detective agent was successfully calling the LLM (Claude) but getting empty results:</p>
+        <ul>
+            <li>Agent logs showed: "Successfully received response from Claude"</li>
+            <li>But all extracted data was empty (0 sources, 0 GitHub targets, etc.)</li>
+            <li>This suggested the LLM responded but JSON parsing failed</li>
+        </ul>
+    </div>
+
+    <h2>Root Causes</h2>
+    <ol>
+        <li><strong>Token Limit Too Low:</strong> The <code>max_tokens</code> parameter was set to only 1000, which caused Claude's responses to be truncated mid-JSON.</li>
+        <li><strong>JSON Extraction Logic Issues:</strong> The <code>_extract_json()</code> method wasn't correctly handling responses that were already valid JSON.</li>
+        <li><strong>No Repair Mechanism:</strong> When the JSON was truncated, the extractor failed silently and returned an empty object.</li>
+        <li><strong>Insufficient Error Logging:</strong> The logs didn't contain enough information to diagnose the problem.</li>
+    </ol>
+
+    <h2>Solution Implemented</h2>
+    <div class="solution">
+        <ul class="checklist">
+            <li><strong>Increased max_tokens from 1000 → 4000</strong><br>
+                Comprehensive research strategies need more space to include all sources, targets, etc.</li>
+            <li><strong>Better JSON detection</strong><br>
+                Check if response is already valid JSON before trying to extract it from code blocks or other formatting</li>
+            <li><strong>JSON repair mechanism</strong><br>
+                Added logic to fix truncated JSON by adding missing closing braces and brackets</li>
+            <li><strong>Better error logging</strong><br>
+                Added detailed logging so we can see what went wrong in parsing attempts</li>
+        </ul>
+    </div>
+
+    <h2>Code Changes</h2>
+    
+    <h3>1. Increased Max Tokens</h3>
+    <pre>
+data = {
+    "model": "claude-3-sonnet-20240229",
+    "max_tokens": 4000,  # Increased from 1000
+    "messages": [
+        {"role": "user", "content": prompt}
+    ]
+}</pre>
+
+    <h3>2. Better JSON Detection</h3>
+    <pre>
+# Check if the raw text is already valid JSON
+try:
+    json.loads(text)
+    logger.debug("Text is already valid JSON")
+    return text.strip()
+except:
+    logger.debug("Text is not valid JSON on its own, attempting extraction")</pre>
+
+    <h3>3. JSON Repair Mechanism</h3>
+    <pre>
+def _repair_incomplete_json(self, json_text: str) -> str:
+    # Count open/close brackets and braces
+    open_curly = json_text.count('{')
+    close_curly = json_text.count('}')
+    open_square = json_text.count('[')
+    close_square = json_text.count(']')
+    
+    # Add missing closing braces/brackets
+    repaired = json_text
+    
+    # Close any unclosed arrays
+    for _ in range(open_square - close_square):
+        repaired += ']'
+        
+    # Close any unclosed objects
+    for _ in range(open_curly - close_curly):
+        repaired += '}'
+        
+    return repaired</pre>
+
+    <h3>4. Better Error Logging</h3>
+    <pre>
+# If all else fails, return an empty JSON object
+logger.error("Could not extract valid JSON, returning empty object")
+# Log a sample of the text to help with debugging
+if len(text) > 200:
+    logger.debug(f"Text sample (first 100 chars): {text[:100]}")
+    logger.debug(f"Text sample (last 100 chars): {text[-100:]}")
+else:
+    logger.debug(f"Full text: {text}")
+return '{}'</pre>
+
+    <h2>Verification</h2>
+    <p>We created a test script that calls Claude with the same prompt the detective agent uses and confirmed:</p>
+    <ul>
+        <li>Claude now returns a complete JSON response (not truncated)</li>
+        <li>The JSON extraction correctly identifies and parses the response</li>
+        <li>All expected fields (sources, github_targets, etc.) are properly populated</li>
+    </ul>
+    
+    <h2>Conclusion</h2>
+    <p>The detective agent's LLM integration should now correctly parse the structured responses from Claude, allowing it to generate comprehensive research strategies and effectively explore leads.</p>
+</body>
+</html>

@@ -1,0 +1,203 @@
+===============================================================================
+                     NARRAHUNT PHASE 2 CODEBASE AUDIT
+===============================================================================
+
+OBJECTIVE: Identify every place where artifacts are extracted, filtered, and 
+blocked from becoming discoveries.
+
+-------------------------------------------------------------------------------
+1. SUPPORTED ARTIFACT TYPES
+-------------------------------------------------------------------------------
+
+A. Standard artifact types (from artifact_extractor.py):
+   - 'solidity_contract'    : Ethereum smart contract code
+   - 'wallet_address'       : Ethereum wallet addresses (0x...)
+   - 'private_key'          : Ethereum private keys (64-char hex)
+   - 'ethereum_keystore'    : JSON keystore files
+   - 'seed_phrase'          : BIP39 mnemonic seed phrases
+   - 'api_key'              : Various API keys (Infura, Alchemy, Etherscan)
+
+B. Enhanced artifact types (from enhanced_artifact_detector.py):
+   - 'name'                 : Name-related artifacts (usernames, project names, etc.)
+
+C. Subtypes of name artifacts (from name_artifact_extractor.py):
+   - 'username'             : User identifiers on platforms
+   - 'project_name'         : Names of blockchain projects
+   - 'company_name'         : Company or organization names
+   - 'alias'                : Alternative names/identifiers
+   - 'legal_name'           : Legal/formal names
+
+-------------------------------------------------------------------------------
+2. ARTIFACT EXTRACTION
+-------------------------------------------------------------------------------
+
+A. Primary extraction points:
+
+   1. artifact_extractor.py:
+      - extract_artifacts_from_html(): Main extraction function (line ~90)
+      - extract_solidity_contracts(): Extracts smart contracts (line ~176)
+      - extract_wallet_addresses(): Extracts wallet addresses (line ~236)
+      - extract_private_keys(): Extracts private keys (line ~271)
+      - extract_json_keystores(): Extracts keystores (line ~333)
+      - extract_seed_phrases(): Extracts seed phrases (line ~384)
+      - extract_api_keys(): Extracts API keys (line ~461)
+
+   2. enhanced_artifact_detector.py:
+      - extract_artifacts(): Router function that selects appropriate extractor (line ~128)
+      - _extract_name_artifacts(): Special handler for name artifacts (line ~89)
+
+   3. name_artifact_extractor.py:
+      - extract_from_html(): Processes HTML for name artifacts (line ~202)
+      - extract_from_text(): Processes text for name artifacts (line ~118)
+
+B. Extraction activation points:
+
+   1. detective_agent.py:
+      - Uses artifact_detector.extract_artifacts() in multiple places:
+        * _investigate_website(): line ~326
+        * _investigate_wayback_calendar(): line ~404
+        * _investigate_wayback(): line ~497
+
+   2. crawler.py:
+      - Uses EnhancedArtifactDetector().extract_artifacts() (line ~161)
+
+   3. main.py:
+      - Uses EnhancedArtifactDetector().extract_artifacts() (line ~153)
+
+-------------------------------------------------------------------------------
+3. ARTIFACT FILTERING
+-------------------------------------------------------------------------------
+
+A. Score-based filtering:
+
+   1. artifact_extractor.py:
+      - score_artifact(): Scores artifacts based on source, content (line ~553)
+      - Factors that increase score:
+        * Trusted domains (+3)
+        * .org TLD (+1)
+        * Pre-2022 snapshot (+1)
+        * Valid artifact syntax (+2)
+      - Factors that decrease score:
+        * Community domains (-5)
+        * Warning phrases (-10)
+
+   2. detective_agent.py:
+      - _process_artifacts(): line ~553-629
+        * Filters out artifacts with score <= 0 (line ~626)
+        * Boosts scores for high-value types (+2):
+          - 'username', 'alias', 'wallet_address', 'private_key'
+        * Boosts score for artifacts matching entity or aliases (+1)
+
+   3. enhanced_artifact_detector.py:
+      - _apply_objective_scoring(): Adjusts scores based on objective (line ~167)
+        * Artifacts matching objective type (+0.2)
+        * Source relevance boosts (+0.1)
+
+B. Duplicate filtering:
+
+   1. detective_agent.py:
+      - _is_duplicate_discovery(): Prevents duplicates (line ~988)
+        * Checks discovery ID
+        * Checks content similarity
+
+   2. name_artifact_extractor.py:
+      - Avoids duplicates by name (line ~197)
+
+C. Type-based filtering:
+
+   1. enhanced_artifact_detector.py:
+      - Artifact type determined from objective (line ~144)
+      - Routes to specialized extractors based on type (line ~154)
+
+-------------------------------------------------------------------------------
+4. DISCOVERIES CREATION
+-------------------------------------------------------------------------------
+
+A. Primary paths to discoveries:
+
+   1. detective_agent.py:
+      - _process_artifacts(): Creates discoveries from artifacts (line ~633)
+        * Adds to self.discoveries and new_discoveries lists (line ~650-651)
+        * Updates entity_aliases if artifact type is 'username', 'alias', or 'wallet_address' (line ~654)
+
+B. Blocks to discovery creation:
+
+   1. detective_agent.py:
+      - Low-scoring artifacts (score <= 0) are filtered out (line ~626)
+      - Duplicate discoveries are filtered out (line ~648)
+
+-------------------------------------------------------------------------------
+5. NAME ARTIFACT HANDLING
+-------------------------------------------------------------------------------
+
+A. Name artifact detection:
+
+   1. enhanced_artifact_detector.py:
+      - "name" type is explicitly supported (line ~144)
+      - _extract_name_artifacts() specific handler (line ~89)
+      - Uses NameArtifactExtractor class (line ~103)
+
+   2. name_artifact_extractor.py:
+      - Specialized patterns for different name subtypes:
+        * username
+        * project_name
+        * company_name
+        * alias
+        * legal_name
+
+B. Name artifact to discovery pipeline:
+
+   1. detective_agent.py:
+      - Special handling for name artifacts:
+        * Score boost for name-related types (line ~617)
+        * Entity aliases updated from name-related discoveries (line ~654)
+
+   2. Usage integration:
+      - Default objective specifically targets name artifacts:
+        "Find name artifacts around Vitalik Buterin" (line ~1077)
+
+-------------------------------------------------------------------------------
+6. INTEGRATION ASSESSMENT
+-------------------------------------------------------------------------------
+
+Name artifacts are explicitly supported and prioritized in the system:
+
+1. The enhanced_artifact_detector.py includes specific handling for 'name' type artifacts
+2. detective_agent.py provides score boosts for name-related artifacts
+3. The default objective specifically targets name artifacts
+4. Name artifacts can become discoveries when:
+   - They have a positive score after adjustments
+   - They are not duplicates of existing discoveries
+5. Name artifacts have dedicated extraction logic in name_artifact_extractor.py
+6. The system recognizes various subtypes of name artifacts
+
+CONCLUSION: NAME ARTIFACTS ARE FULLY SUPPORTED AND INTEGRATED.
+
+-------------------------------------------------------------------------------
+7. POTENTIAL ISSUES
+-------------------------------------------------------------------------------
+
+1. Type name mismatch:
+   - name_artifact_extractor.py uses 'name_artifact' as type (line ~187)
+   - enhanced_artifact_detector.py standardizes to 'name' (line ~112)
+   - detective_agent.py looks for 'username', 'alias', etc. (line ~617, ~654)
+   - Potential for artifacts to be missed in filtering logic
+
+2. Subtype handling inconsistency:
+   - Original artifact_extractor.py has no concept of subtypes
+   - name_artifact_extractor.py uses subtypes for different name categories
+   - Potential inconsistency in how subtypes are processed across the system
+
+-------------------------------------------------------------------------------
+8. RECOMMENDATIONS
+-------------------------------------------------------------------------------
+
+1. Standardize on consistent type/subtype naming across all components
+2. Ensure detective_agent.py correctly identifies all name artifact variations
+3. Review score adjustments to ensure appropriate weighting across artifact types
+4. Consider adding explicit logging for name artifact processing
+5. Add validation for name artifacts to ensure quality/relevance
+
+===============================================================================
+                             END OF REPORT
+===============================================================================

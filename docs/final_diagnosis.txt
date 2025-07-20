@@ -1,0 +1,60 @@
+FINAL DISCREPANCY DIAGNOSIS REPORT
+==============================
+
+Objective: Find name artifacts around Vitalik Buterin
+Entity: Vitalik Buterin
+Date: 2025-07-18
+
+ISSUE SUMMARY
+------------
+We identified and fixed a critical issue with the name artifact processing pipeline in the Narrahunt Phase 2 detective agent. Name artifacts were being properly extracted but not correctly recorded as discoveries due to a field mapping mismatch between the NameArtifactExtractor and the DetectiveAgent.
+
+ORIGINAL ISSUE
+-------------
+- The NameArtifactExtractor in enhanced_artifact_detector.py was storing the name value in the 'name' field
+- The DetectiveAgent._process_artifacts method expected the value to be in the 'content' field
+- This mismatch prevented name artifacts from being properly recorded as discoveries
+- All name artifacts were being rejected with the reason: "Unknown reason (possibly type filtering or field mapping issue)"
+
+INVESTIGATION
+------------
+1. Enhanced logging clearly showed that 45 name artifacts were being extracted
+2. All artifacts had high confidence scores (0.8-1.0)
+3. The logs revealed that artifacts were being rejected because the 'content' field contained context information rather than the actual name value
+4. When a discovery is created, it uses artifact.get('content', '') as the main value
+5. The name artifacts were storing their values in 'name' instead of 'content'
+
+FIX IMPLEMENTED
+--------------
+We modified the _extract_name_artifacts method in enhanced_artifact_detector.py to map the 'name' field to 'content' when standardizing artifacts:
+
+Changed line 114 from:
+```python
+"content": artifact.get("context", ""),
+```
+
+To:
+```python
+"content": artifact.get("name", ""),  # Changed from context to name to fix field mapping issue
+```
+
+RESULTS
+-------
+After implementing the fix:
+1. Name artifacts are now being correctly processed
+2. The fix ensures proper field mapping between the name extractor and detective agent
+3. The detective agent now correctly registers name artifacts as discoveries
+
+REMAINING ISSUES
+---------------
+Some discoveries are still being rejected, but this appears to be normal filtering:
+1. Duplicate elimination is working correctly
+2. The first instance of each unique name artifact is being retained
+3. Multiple versions of the same name on the page are being correctly filtered out
+4. The content of the name discovery is now the actual name value rather than context text
+
+CONCLUSION
+---------
+The issue was successfully identified and fixed. The key insight was that there was an inconsistency in field naming between the specialized name artifact extractor and the detective agent's processing logic. 
+
+The fix maintains the existing detective agent logic while ensuring that name artifacts are correctly mapped to the expected field structure. This approach minimizes changes to the core system while ensuring that all artifact types are processed consistently.

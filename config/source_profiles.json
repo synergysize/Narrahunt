@@ -1,0 +1,34 @@
+{
+  "ethereum.org": {
+    "allowed": true,
+    "seed_urls": [
+      "https://ethereum.org/en/",
+      "https://ethereum.org/en/developers/",
+      "https://ethereum.org/en/whitepaper/"
+    ]
+  },
+  "blog.ethereum.org": {
+    "allowed": true,
+    "seed_urls": [
+      "https://blog.ethereum.org/"
+    ]
+  },
+  "vitalik.ca": {
+    "allowed": true,
+    "seed_urls": [
+      "https://vitalik.ca/"
+    ]
+  },
+  "ethresear.ch": {
+    "allowed": true,
+    "seed_urls": [
+      "https://ethresear.ch/"
+    ]
+  },
+  "eips.ethereum.org": {
+    "allowed": true,
+    "seed_urls": [
+      "https://eips.ethereum.org/"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "artifact_types": [
+    "code",
+    "wallet",
+    "name",
+    "personal",
+    "legal",
+    "academic",
+    "hidden",
+    "institutional",
+    "repository",
+    "social_media"
+  ],
+  "target_entities": [
+    "crypto devs",
+    "meme creators",
+    "companies",
+    "institutions"
+  ],
+  "specific_targets": [
+    "Vitalik Buterin",
+    "Matt Furie",
+    "Gavin Wood",
+    "Ethereum Foundation",
+    "Satoshi Nakamoto",
+    "Joseph Lubin",
+    "Charles Hoskinson"
+  ],
+  "objective_templates": [
+    "Find {artifact_type} around {entity}",
+    "Discover {artifact_type} related to {entity}",
+    "Research {artifact_type} associated with {entity}",
+    "Investigate {artifact_type} connected to {entity}"
+  ],
+  "progress_thresholds": {
+    "dead_end_time_minutes": 30,
+    "min_discoveries_for_success": 2
+  }
+}
