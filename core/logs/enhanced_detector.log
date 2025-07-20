@@ -1,0 +1,6 @@
+2025-07-20 21:26:31,280 - narrahunt.artifact_extractor - INFO - Loading BIP39 wordlist from file
+2025-07-20 21:26:31,283 - narrahunt.artifact_extractor - ERROR - Error loading BIP39 wordlist: [Errno 2] No such file or directory: '/home/computeruse/.anthropic/narrahunt_phase2/core/config/wordlists/bip39.txt'
+2025-07-20 21:26:31,284 - narrahunt.artifact_extractor - WARNING - Seed phrase detection will be disabled
+2025-07-20 21:26:31,285 - narrahunt.artifact_extractor - INFO - Creating minimal BIP39 wordlist for testing
+2025-07-20 21:26:31,287 - narrahunt.artifact_extractor - INFO - Created minimal wordlist at /home/computeruse/.anthropic/narrahunt_phase2/core/config/wordlists/bip39.txt
+2025-07-20 21:26:31,295 - enhanced_artifact_detector - INFO - Name artifact extractor is available
