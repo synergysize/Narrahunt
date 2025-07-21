@@ -1,0 +1,11 @@
+2025-07-20 21:29:15,517 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/config/.env
+2025-07-20 21:29:15,518 - config_loader - INFO - .env exists: False
+2025-07-20 21:29:15,518 - config_loader - WARNING - .env file not found, creating a template...
+2025-07-20 21:29:15,519 - config_loader - INFO - Created template .env file at /home/computeruse/.anthropic/narrahunt_phase2/config/.env
+2025-07-20 21:29:15,520 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-20 21:29:15,520 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-20 21:29:15,532 - llm_integration - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/.env
+2025-07-20 21:29:15,532 - llm_integration - INFO - .env exists: True
+2025-07-20 21:29:15,533 - config_loader - INFO - Loaded API key 'CLAUDE_API_KEY': sk-a...XgAA
+2025-07-20 21:29:15,533 - config_loader - INFO - Loaded API key 'OPENAI_API_KEY': sk-p...dVwA
+2025-07-20 21:29:15,533 - config_loader - INFO - Loaded API key 'GOOGLE_API_KEY': AIza...hdzw

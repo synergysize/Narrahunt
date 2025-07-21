@@ -1,0 +1,123 @@
+{
+    "sources": [
+        {
+            "url": "https://vitalik.ca",
+            "priority": 10,
+            "rationale": "Primary personal blog with technical writings dating back to 2013",
+            "potential_artifacts": ["early project names", "wallet addresses", "unpublished ideas"]
+        },
+        {
+            "url": "https://vitalik.ca/general-philosophy.html",
+            "priority": 8,
+            "rationale": "Early philosophical writings could reveal influences or connections",
+            "potential_artifacts": ["fictional world/currency references", "literary inspirations"]
+        },
+        {
+            "url": "https://www.reddit.com/user/vbuterin",
+            "priority": 9,
+            "rationale": "Reddit account with early comments and participation",
+            "potential_artifacts": ["old usernames", "early interests", "throwaway remarks"]
+        }
+    ],
+    "github_targets": [
+        {
+            "url": "https://github.com/vbuterin/ethereum",
+            "priority": 9,
+            "rationale": "Original Ethereum repository with early commits and code",
+            "potential_artifacts": ["test addresses", "contract snippets", "prototype names"]
+        },
+        {
+            "url": "https://github.com/vbuterin/pybitcointools",
+            "priority": 7,
+            "rationale": "Early Bitcoin tools could contain clues about interests or usernames",
+            "potential_artifacts": ["wallet names", "scripts", "variable names"]
+        },
+        {
+            "url": "https://github.com/vbuterin?tab=repositories",
+            "priority": 8,
+            "rationale": "Explore all of Vitalik's GitHub repositories for potential artifacts",
+            "potential_artifacts": ["project names", "code samples", "test data"]
+        }
+    ],
+    "wayback_targets": [
+        {
+            "url": "https://ethereum.org",
+            "priority": 8,
+            "years": [2014, 2015, 2016],
+            "rationale": "Early Ethereum website versions with potential keys, test addresses",
+            "potential_artifacts": ["test wallet keys", "original branding elements", "early team members"]
+        },
+        {
+            "url": "https://bitcoinmagazine.com",
+            "priority": 7,
+            "years": [2011, 2012, 2013],
+            "rationale": "Vitalik's writing at Bitcoin Magazine could reveal early interests",
+            "potential_artifacts": ["early blockchain ideas", "topics or terms of interest"]
+        },
+        {
+            "url": "https://bitcoinbook.cs.princeton.edu",
+            "priority": 7,
+            "years": [2013, 2014, 2015], 
+            "rationale": "Princeton Bitcoin book Vitalik contributed to",
+            "potential_artifacts": ["code samples", "explanations of key concepts"]
+        }
+    ],
+    "search_queries": [
+        {
+            "query": "Vitalik Buterin early projects before Ethereum",
+            "priority": 7,
+            "rationale": "Find pre-Ethereum projects that might contain valuable artifacts",
+            "potential_artifacts": ["project names", "usernames", "collaboration details"]
+        },
+        {
+            "query": "Vitalik Buterin earliest writings on cryptocurrency",
+            "priority": 8,
+            "rationale": "Uncover formative opinions and ideas before becoming prominent",
+            "potential_artifacts": ["working titles", "unconventional viewpoints", "philosophical takes"]
+        },
+        {
+            "query": "Vitalik Buterin old forum posts",
+            "priority": 9,
+            "rationale": "Early forum activity could reveal unpolished ideas and perspectives",
+            "potential_artifacts": ["casual predictions", "hypothetical ideas", "online persona"]
+        }
+    ],
+    "forum_targets": [
+        {
+            "url": "https://bitcointalk.org/index.php?action=profile;u=11772",
+            "priority": 10,
+            "rationale": "Vitalik's Bitcoin forum profile with early crypto discussions",
+            "potential_artifacts": ["early opinions", "forgotten predictions", "username variations"]
+        },
+        {
+            "url": "https://ethereum.stackexchange.com/users/343/vitalik-buterin",
+            "priority": 9,
+            "rationale": "Ethereum StackExchange involvement with technical details",
+            "potential_artifacts": ["exploratory ideas", "proposed features", "testing data"]
+        },
+        {
+            "url": "https://forum.ethereum.org/search?q=vitalik%20is%3Aauthor",
+            "priority": 8,
+            "rationale": "Ethereum community forum posts from early days",
+            "potential_artifacts": ["feedback on proposals", "debugging notes", "casual remarks"]
+        }
+    ],
+    "key_time_periods": [
+        {
+            "period": "2011-2013", 
+            "description": "Bitcoin Magazine and early crypto involvement",
+            "priority": 9
+        },
+        {
+            "period": "2013-2015",
+            "description": "Ethereum conception and launch",
+            "priority": 10
+        },
+        {
+            "period": "2009-2011",
+            "description": "University years before entering crypto space",
+            "priority": 6,
+            "rationale": "Potential early influences, interests, or experiments"
+        }
+    ]
+}

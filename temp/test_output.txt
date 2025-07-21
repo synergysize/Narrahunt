@@ -1,0 +1,66 @@
+2025-07-20 20:39:25,907 - narrahunt.queue - ERROR - Error parsing queue state file: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
+2025-07-20 20:39:25,907 - narrahunt.queue - INFO - Attempting to load from backup file after main file corruption
+2025-07-20 20:39:25,909 - narrahunt.queue - INFO - Loaded queue state from backup: 2 pending, 0 visited
+2025-07-20 20:39:25,915 - narrahunt.queue - INFO - Restored backup file to main state file
+2025-07-20 20:39:25,930 - narrative_matrix - INFO - Generated new objective: Find personal around meme creators
+2025-07-20 20:39:25,935 - narrative_matrix - INFO - Added specific target: Test Entity
+2025-07-20 20:39:25,939 - narrative_matrix - INFO - Configuration saved successfully.
+2025-07-20 20:39:25,943 - narrative_matrix - INFO - Logged narrative-worthy discovery to test_results/narratives/20250720_203925_personal.json
+2025-07-20 20:39:25,953 - narrative_matrix - INFO - Marked objective as test_completed and archived to /home/computeruse/.anthropic/narrahunt_phase2/results/completed_objectives/20250720_203925_test_completed.json
+==================================================
+Testing URL Queue file safety...
+==================================================
+Creating URL Queue with test state file...
+Adding test URLs...
+Saving queue state first time...
+Save state result (first): True
+After first save:
+  - Main state file exists: True
+  - Backup file exists: False
+
+Adding another URL and saving again...
+Save state result (second): True
+After second save:
+  - Main state file exists: True
+  - Backup file exists: True
+Main file size: 474 bytes
+First 100 chars of content: {
+  "pending": {
+    "c984d06aafbecf6bc55569f964148ea3": {
+      "url": "https://example.com",
+     
+
+Testing backup recovery...
+Corrupting main file...
+Attempting to load from corrupted file (should use backup)...
+Load state result after corruption: True
+Loaded 2 pending URLs (should be 2)
+Main file restored from backup: True
+Cleaning up test files...
+==================================================
+Testing Narrative Matrix file safety...
+==================================================
+Creating test directories...
+Initializing Narrative Matrix with test paths...
+Config file exists: True
+
+Generating objective...
+Generated objective: Find personal around meme creators
+Objective file exists: True
+Objective file content: 'Find personal around meme creators'
+Temp file exists (should be False): False
+
+Testing discovery recording...
+Narrative files created: 1 (should be 1)
+Narrative file names: ['20250720_203925_personal.json']
+Narrative file size: 328 bytes
+First 100 chars of content: {
+  "objective": "Find personal around meme creators",
+  "artifact_type": "personal",
+  "entity": "m
+
+Testing mark_objective_complete...
+Objective file still exists (should be False): False
+Cleaning up test directories...
+
+All tests completed!
