@@ -1,0 +1,3 @@
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+Investigation complete. Report saved to: discoveries/report_20250721_024249.md

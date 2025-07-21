@@ -1,0 +1,11 @@
+{
+  "objective": "--objective",
+  "entity": "Find name artifacts around Matt Furie",
+  "current_iteration": 3,
+  "discoveries": [],
+  "iteration_discoveries": {
+    "1": [],
+    "2": [],
+    "3": []
+  }
+}

@@ -1,0 +1,25 @@
+2025-07-21 01:53:04,752 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:53:04,753 - config_loader - INFO - .env exists: True
+2025-07-21 01:53:04,754 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:53:04,754 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:53:04,778 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 01:53:04,808 - real_objective - INFO - Running objective: Find name artifacts around Vitalik Buterin
+2025-07-21 01:53:04,808 - real_objective - INFO - Max URLs: 1, Max time: 45 minutes
+2025-07-21 01:53:04,814 - real_objective - WARNING - Using stub LLMIntegration class
+2025-07-21 01:53:04,817 - config_loader - WARNING - API key 'CLAUDE_API_KEY' not found in environment variables.
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+RUNNING REAL OBJECTIVE
+================================================================================
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/run_real_objective.py", line 223, in <module>
+    main()
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/run_real_objective.py", line 220, in main
+    run_objective(args.objective, args.max_urls, args.max_time)
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/run_real_objective.py", line 67, in run_objective
+    strategy_generator = LLMResearchStrategy()
+                         ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/modules/llm_research_strategy.py", line 59, in __init__
+    raise ValueError("No LLM API key provided. Please set CLAUDE_API_KEY in your .env file.")
+ValueError: No LLM API key provided. Please set CLAUDE_API_KEY in your .env file.

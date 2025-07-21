@@ -1,0 +1,30 @@
+2025-07-21 02:47:16,254 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:47:16,256 - config_loader - INFO - .env exists: True
+2025-07-21 02:47:16,257 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:47:16,257 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:47:16,293 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:47:16,303 - narrahunt.main - ERROR - Error loading source profiles: [Errno 2] No such file or directory: '/home/computeruse/.anthropic/narrahunt_phase2/source_profiles.json'
+2025-07-21 02:47:16,304 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: default
+2025-07-21 02:47:16,304 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: name
+2025-07-21 02:47:16,305 - narrahunt.main - INFO - Starting crawl with max_pages=100
+2025-07-21 02:47:16,307 - narrahunt.main - INFO - Processing https://ethereum.org/en/ (depth 0)
+2025-07-21 02:47:16,446 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/
+2025-07-21 02:47:16,796 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/ (475122 bytes)
+2025-07-21 02:47:16,797 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/
+2025-07-21 02:47:16,862 - narrahunt.main - INFO - Added 57 new URLs to queue from https://ethereum.org/en/
+2025-07-21 02:47:18,863 - narrahunt.main - INFO - Processing https://ethereum.org/en/10years/ (depth 1)
+2025-07-21 02:47:19,027 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/10years/
+2025-07-21 02:47:19,716 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/10years/ (492795 bytes)
+2025-07-21 02:47:19,717 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/10years/
+2025-07-21 02:47:19,765 - narrahunt.main - INFO - Added 1 new URLs to queue from https://ethereum.org/en/10years/
+2025-07-21 02:47:21,765 - narrahunt.main - INFO - Processing https://ethereum.org/en/wallets/find-wallet/ (depth 1)
+2025-07-21 02:47:21,893 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 02:47:22,437 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/wallets/find-wallet/ (346406 bytes)
+2025-07-21 02:47:22,439 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 02:47:22,466 - narrahunt.main - INFO - Added 0 new URLs to queue from https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 02:47:24,467 - narrahunt.main - INFO - Processing https://ethereum.org/en/get-eth/ (depth 1)
+2025-07-21 02:47:24,610 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/get-eth/
+2025-07-21 02:47:24,957 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/get-eth/ (218093 bytes)
+2025-07-21 02:47:24,958 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/get-eth/
+2025-07-21 02:47:24,978 - narrahunt.main - INFO - Found 1 artifacts on https://ethereum.org/en/get-eth/
+2025-07-21 02:47:25,012 - narrahunt.main - INFO - Added 1 new URLs to queue from https://ethereum.org/en/get-eth/

@@ -1,0 +1,20 @@
+2025-07-21 01:33:28,520 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:33:28,520 - config_loader - INFO - .env exists: True
+2025-07-21 01:33:28,521 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:33:28,521 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:33:28,557 - detective_agent - INFO - Detective Agent initialized with objective: Investigate the early history of Ethereum and identify key contributors
+2025-07-21 01:33:28,565 - detective_agent - INFO - Primary entity: Ethereum
+2025-07-21 01:33:28,565 - modules.agent_core - INFO - Starting investigation with focused exploration strategy...
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/detective_agent.py", line 81, in <module>
+    sys.exit(run_detective())
+             ^^^^^^^^^^^^^^^
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/modules/agent_core.py", line 223, in main
+    agent.start_investigation()
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/detective_agent.py", line 73, in start_investigation
+    return start_investigation(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/modules/agent_core.py", line 23, in start_investigation
+    initialize_research(agent)
+    ^^^^^^^^^^^^^^^^^^^
+NameError: name 'initialize_research' is not defined

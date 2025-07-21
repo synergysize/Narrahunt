@@ -1,0 +1,66 @@
+# Narrahunt Phase 2 Cleanup Summary
+
+## Files Merged/Replaced
+The following slim/modified files were newer and replaced their originals:
+- artifact_extractor_slim.py → artifact_extractor.py (original saved as .legacy)
+- detective_agent_slim.py → detective_agent.py (original saved as .legacy)
+- integrated_main_slim.py → integrated_main.py (original saved as .legacy)
+- llm_integration_slim.py → llm_integration.py (original saved as .legacy)
+
+## Files Deleted
+The following files were older and deleted:
+- test_detective_modified.py (older than test_detective.py)
+
+## Files Moved to Modules
+The following utility files were moved to the /src/modules/ directory:
+- config_loader.py
+- crawl.py
+- crawler.py
+- enhanced_artifact_detector.py
+- fetch.py
+- llm_failover.py
+- llm_research_strategy.py
+- main_integration.py
+- name_artifact_extractor.py
+- narrative_matrix.py
+- objectives_manager.py
+- research_strategy.py
+- url_queue.py
+- validate_changes.py
+- verify_api_keys.py
+- wayback_integration.py
+
+## Files Moved to Backup
+The following files were moved to the /backup/legacy_versions/ directory:
+- All .bak files
+- All .orig files
+- All .legacy files
+- All _slim.py files after merging
+- All _demo.py files
+- Other files not in the allowed list:
+  - artifact_extractor.py (moved after replacing)
+  - ccu_cleanup.py
+  - enhanced_integration.py
+  - enhanced_logging_detective.py
+  - fix_recommendation.py
+  - llm_integration.py (moved after replacing)
+  - run_validation.py
+
+## Files Kept in /src/
+The following files were kept in the top-level /src/ directory:
+- detective_agent.py (from slim version)
+- integrated_main.py (from slim version)
+- main.py
+- run_autonomous.py
+- run_real_objective.py
+- All test_*.py files
+
+## Environment File Handling
+- Found .env file and created .env.example with placeholders
+
+## Modules Structure
+- Updated /src/modules/__init__.py to include all modules
+- Core functionality (agent_core, routing, extractors, llm_engine, utils) is already in place
+- Added imports for the newly moved utility modules
+
+All operations are reversible by using the files saved in /backup/legacy_versions/.

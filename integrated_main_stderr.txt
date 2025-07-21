@@ -1,0 +1,16 @@
+2025-07-21 01:33:37,665 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:33:37,666 - config_loader - INFO - .env exists: True
+2025-07-21 01:33:37,667 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:33:37,667 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:33:37,678 - __main__ - WARNING - Config file not found: None, using defaults
+2025-07-21 01:33:37,686 - __main__ - INFO - IntegratedController initialized with config: None
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/integrated_main.py", line 146, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/integrated_main.py", line 140, in main
+    report_path = controller.run_investigation(args.objective, args.entity, args.iterations)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/integrated_main.py", line 95, in run_investigation
+    from detective_agent_slim import DetectiveAgent
+ModuleNotFoundError: No module named 'detective_agent_slim'

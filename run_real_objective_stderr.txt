@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/run_real_objective.py", line 30, in <module>
+    from narrative_matrix import NarrativeMatrix
+ModuleNotFoundError: No module named 'narrative_matrix'

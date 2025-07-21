@@ -1,0 +1,63 @@
+# Narrahunt Phase 2 Refactor Script Analysis
+
+## What the Refactor Script Did
+
+1. **Backup Creation**:
+   - Created backup (.bak) files for all Python files in the src directory
+   - Total of 40 backup files created
+
+2. **Utility Function Extraction**:
+   - Identified common utility functions across the codebase
+   - Extracted two main utility functions to modules/utils.py:
+     - is_allowed_by_robots
+     - is_allowed_domain
+
+3. **Imports Management**:
+   - Attempted to clean up unused imports
+   - Added imports of extracted utility functions to relevant files
+
+## Issues Identified
+
+1. **Missing Dependencies in Utils Module**:
+   - The extracted utility functions were missing necessary imports like requests and urlparse
+   - Fixed by adding these imports to the utils.py file
+
+2. **Method vs Function Extraction**:
+   - The is_allowed_domain function was incorrectly extracted as it was a method in some files
+   - Fixed by converting it to a standalone function with an allowed_domains parameter
+
+3. **Incomplete Function Replacement**:
+   - The script removed function definitions but didn't properly update all references
+   - Some files like integrated_main.py had function calls removed without appropriate replacements
+
+4. **Unchanged Import Duplications**:
+   - Duplicate imports (like "import os" and "import sys" appearing twice) were not fixed
+   - This indicates that the import cleaning functionality didn't work as expected
+
+## Manual Fixes Applied
+
+1. Added proper imports to the utils.py file
+2. Fixed the is_allowed_domain function to be a standalone function with proper parameters
+3. Removed broken import in integrated_main.py
+
+## Recommendations for Future Improvements
+
+1. **Enhanced Static Analysis**:
+   - Use a more robust method to identify function dependencies and references
+   - Consider using ast module for better Python code analysis
+
+2. **Staged Refactoring**:
+   - Perform refactoring in multiple passes with testing between steps
+   - First extract utility functions, then update references, then clean imports
+
+3. **Test Suite Integration**:
+   - Run tests after refactoring to ensure functionality is preserved
+   - Add unit tests for extracted utility functions
+
+4. **Better Import Management**:
+   - Use specialized tools like isort for import organization
+   - Implement proper detection of unused imports
+
+## Conclusion
+
+The refactoring script successfully identified and extracted common utility functions, but had some issues with properly updating references and cleaning imports. Manual intervention was required to fix these issues. For future refactoring efforts, a more robust approach with better testing would be recommended.

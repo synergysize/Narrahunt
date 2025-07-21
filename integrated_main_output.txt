@@ -1,0 +1,73 @@
+2025-07-21 01:47:35,087 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:47:35,087 - config_loader - INFO - .env exists: True
+2025-07-21 01:47:35,089 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:47:35,089 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:47:35,102 - __main__ - WARNING - Config file not found: None, using defaults
+2025-07-21 01:47:35,151 - __main__ - INFO - IntegratedController initialized with config: None
+2025-07-21 01:47:35,159 - detective_agent_slim - INFO - Detective Agent initialized with objective: Investigate the early history of Ethereum
+2025-07-21 01:47:35,159 - detective_agent_slim - INFO - Primary entity: Ethereum
+2025-07-21 01:47:35,160 - modules.agent_core - INFO - Starting investigation with focused exploration strategy...
+2025-07-21 01:47:35,160 - modules.agent_core - INFO - Initializing research strategy...
+2025-07-21 01:47:35,164 - research_strategy - INFO - Added target to todo list: search - Ethereum history (Priority: 10)
+2025-07-21 01:47:35,164 - research_strategy - INFO - Added target to todo list: search - Ethereum origins (Priority: 9)
+2025-07-21 01:47:35,164 - research_strategy - INFO - Added target to todo list: search - Ethereum early development (Priority: 8)
+2025-07-21 01:47:35,164 - modules.agent_core - INFO - Research strategy initialized with 3 targets
+2025-07-21 01:47:35,164 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 1/50
+================================================================================
+2025-07-21 01:47:35,164 - research_strategy - INFO - Selected target: search - Ethereum history (Priority: 10)
+2025-07-21 01:47:35,164 - modules.agent_core - INFO - Executing search query: Ethereum history
+2025-07-21 01:47:35,165 - research_strategy - INFO - Marked target as complete: search - Ethereum history
+2025-07-21 01:47:35,165 - modules.agent_core - INFO - No new discoveries in iteration 1, continuing with next target
+2025-07-21 01:47:35,165 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 01:47:35,168 - modules.agent_core - INFO - State saved to discoveries/state/investigation_state.json
+2025-07-21 01:47:35,169 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 2/50
+================================================================================
+2025-07-21 01:47:35,169 - research_strategy - INFO - Selected target: search - Ethereum origins (Priority: 9)
+2025-07-21 01:47:35,169 - modules.agent_core - INFO - Executing search query: Ethereum origins
+2025-07-21 01:47:35,169 - research_strategy - INFO - Marked target as complete: search - Ethereum origins
+2025-07-21 01:47:35,169 - modules.agent_core - INFO - No new discoveries in iteration 2, continuing with next target
+2025-07-21 01:47:35,169 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 01:47:35,174 - modules.agent_core - INFO - State saved to discoveries/state/investigation_state.json
+2025-07-21 01:47:35,174 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 3/50
+================================================================================
+2025-07-21 01:47:35,174 - research_strategy - INFO - Selected target: search - Ethereum early development (Priority: 8)
+2025-07-21 01:47:35,174 - modules.agent_core - INFO - Executing search query: Ethereum early development
+2025-07-21 01:47:35,174 - research_strategy - INFO - Marked target as complete: search - Ethereum early development
+2025-07-21 01:47:35,175 - modules.agent_core - INFO - No new discoveries in iteration 3, continuing with next target
+2025-07-21 01:47:35,175 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 01:47:35,178 - modules.agent_core - INFO - State saved to discoveries/state/investigation_state.json
+2025-07-21 01:47:35,179 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 4/50
+================================================================================
+2025-07-21 01:47:35,179 - modules.agent_core - WARNING - No more targets to investigate in strategy
+2025-07-21 01:47:35,179 - modules.routing - INFO - Performing comprehensive research strategy review...
+2025-07-21 01:47:35,633 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 01:47:35,633 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 01:47:35,633 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 01:47:35,633 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 1/3)
+2025-07-21 01:47:37,758 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 01:47:37,758 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 01:47:37,759 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 01:47:37,759 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 2/3)
+2025-07-21 01:47:39,882 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 01:47:39,883 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 01:47:39,883 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 01:47:39,883 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 3/3)
+2025-07-21 01:47:39,884 - modules.routing - ERROR - Failed to get strategy recommendations after multiple attempts
+2025-07-21 01:47:39,884 - modules.routing - INFO - Research strategy updated. New todo count: 0
+2025-07-21 01:47:39,884 - modules.agent_core - INFO - No targets in research strategy after review. Ending investigation.
+2025-07-21 01:47:39,884 - modules.agent_core - INFO - Investigation completed after 4 iterations
+2025-07-21 01:47:39,884 - modules.agent_core - INFO - Total discoveries: 0
+2025-07-21 01:47:39,884 - modules.agent_core - INFO - Generating investigation report...
+2025-07-21 01:47:39,888 - modules.agent_core - INFO - Report saved to discoveries/reports/investigation_report.json
+2025-07-21 01:47:39,890 - __main__ - INFO - Investigation report saved to: discoveries/report_20250721_014739.md
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+Investigation complete. Report saved to: discoveries/report_20250721_014739.md

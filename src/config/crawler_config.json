@@ -1,0 +1,14 @@
+{
+  "crawl_delay": 2,
+  "max_pages": 100,
+  "max_depth": 3,
+  "respect_robots": true,
+  "allowed_domains": [
+    "medium.com",
+    "twitter.com",
+    "reddit.com",
+    "duckduckgo.com",
+    "archive.org",
+    "web.archive.org"
+  ]
+}

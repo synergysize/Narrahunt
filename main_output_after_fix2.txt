@@ -1,0 +1,73 @@
+2025-07-21 01:52:01,756 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:52:01,757 - config_loader - INFO - .env exists: True
+2025-07-21 01:52:01,757 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:52:01,758 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:52:01,791 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 01:52:01,805 - narrahunt.main - ERROR - Error loading source profiles: [Errno 2] No such file or directory: '/home/computeruse/.anthropic/narrahunt_phase2/source_profiles.json'
+2025-07-21 01:52:01,805 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: default
+2025-07-21 01:52:01,805 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: name
+2025-07-21 01:52:01,805 - narrahunt.main - INFO - Starting crawl with max_pages=10
+2025-07-21 01:52:01,807 - narrahunt.main - INFO - Processing https://ethereum.org/en/ (depth 0)
+2025-07-21 01:52:02,005 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/
+2025-07-21 01:52:02,361 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/ (475122 bytes)
+2025-07-21 01:52:02,362 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/
+2025-07-21 01:52:02,399 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:02,427 - narrahunt.main - INFO - Added 57 new URLs to queue from https://ethereum.org/en/
+2025-07-21 01:52:04,428 - narrahunt.main - INFO - Processing https://ethereum.org/en/10years/ (depth 1)
+2025-07-21 01:52:04,574 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/10years/
+2025-07-21 01:52:05,211 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/10years/ (492795 bytes)
+2025-07-21 01:52:05,212 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/10years/
+2025-07-21 01:52:05,233 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:05,252 - narrahunt.main - INFO - Added 1 new URLs to queue from https://ethereum.org/en/10years/
+2025-07-21 01:52:07,253 - narrahunt.main - INFO - Processing https://ethereum.org/en/wallets/find-wallet/ (depth 1)
+2025-07-21 01:52:07,431 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 01:52:07,985 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/wallets/find-wallet/ (346505 bytes)
+2025-07-21 01:52:07,986 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 01:52:07,999 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:08,011 - narrahunt.main - INFO - Added 0 new URLs to queue from https://ethereum.org/en/wallets/find-wallet/
+2025-07-21 01:52:10,012 - narrahunt.main - INFO - Processing https://ethereum.org/en/get-eth/ (depth 1)
+2025-07-21 01:52:10,156 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/get-eth/
+2025-07-21 01:52:10,544 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/get-eth/ (218093 bytes)
+2025-07-21 01:52:10,545 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/get-eth/
+2025-07-21 01:52:10,562 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:10,587 - narrahunt.main - INFO - Added 1 new URLs to queue from https://ethereum.org/en/get-eth/
+2025-07-21 01:52:12,588 - narrahunt.main - INFO - Processing https://ethereum.org/en/dapps/ (depth 1)
+2025-07-21 01:52:12,744 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/dapps/
+2025-07-21 01:52:13,378 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/dapps/ (345635 bytes)
+2025-07-21 01:52:13,379 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/dapps/
+2025-07-21 01:52:13,410 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:13,440 - narrahunt.main - INFO - Added 2 new URLs to queue from https://ethereum.org/en/dapps/
+2025-07-21 01:52:15,441 - narrahunt.main - INFO - Processing https://ethereum.org/en/developers/ (depth 1)
+2025-07-21 01:52:15,582 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/developers/
+2025-07-21 01:52:16,241 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/developers/ (261830 bytes)
+2025-07-21 01:52:16,242 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/developers/
+2025-07-21 01:52:16,260 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:16,279 - narrahunt.main - INFO - Added 18 new URLs to queue from https://ethereum.org/en/developers/
+2025-07-21 01:52:18,280 - narrahunt.main - INFO - Processing https://ethereum.org/en/stablecoins/ (depth 1)
+2025-07-21 01:52:18,421 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/stablecoins/
+2025-07-21 01:52:19,243 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/stablecoins/ (490375 bytes)
+2025-07-21 01:52:19,244 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/stablecoins/
+2025-07-21 01:52:19,272 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:19,297 - narrahunt.main - INFO - Added 0 new URLs to queue from https://ethereum.org/en/stablecoins/
+2025-07-21 01:52:21,298 - narrahunt.main - INFO - Processing https://ethereum.org/en/defi/ (depth 1)
+2025-07-21 01:52:21,460 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/defi/
+2025-07-21 01:52:21,880 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/defi/ (423554 bytes)
+2025-07-21 01:52:21,881 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/defi/
+2025-07-21 01:52:21,942 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:21,967 - narrahunt.main - INFO - Added 1 new URLs to queue from https://ethereum.org/en/defi/
+2025-07-21 01:52:23,968 - narrahunt.main - INFO - Processing https://ethereum.org/en/layer-2/ (depth 1)
+2025-07-21 01:52:24,120 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/layer-2/
+2025-07-21 01:52:24,528 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/layer-2/ (289644 bytes)
+2025-07-21 01:52:24,528 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/layer-2/
+2025-07-21 01:52:24,544 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:24,559 - narrahunt.main - INFO - Added 2 new URLs to queue from https://ethereum.org/en/layer-2/
+2025-07-21 01:52:26,559 - narrahunt.main - INFO - Processing https://ethereum.org/en/nft/ (depth 1)
+2025-07-21 01:52:26,701 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/nft/
+2025-07-21 01:52:27,059 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/nft/ (330221 bytes)
+2025-07-21 01:52:27,060 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/nft/
+2025-07-21 01:52:27,076 - modules.extractors - ERROR - Error extracting artifacts: name 'extract_json_keystores' is not defined
+2025-07-21 01:52:27,094 - narrahunt.main - INFO - Added 4 new URLs to queue from https://ethereum.org/en/nft/
+2025-07-21 01:52:29,098 - narrahunt.main - INFO - Queue state saved: 77 pending, 10 visited
+2025-07-21 01:52:29,123 - narrahunt.main - INFO - Crawl completed. Processed 10 pages, found 0 artifacts
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True

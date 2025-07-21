@@ -1,0 +1,16 @@
+2025-07-21 02:47:47,165 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:47:47,166 - config_loader - INFO - .env exists: True
+2025-07-21 02:47:47,167 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:47:47,167 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:47:47,194 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:47:47,211 - autonomous_runner - INFO - Starting autonomous mode with parameters: cycles=1, delay=1s, continuous=False
+2025-07-21 02:47:47,218 - objectives_manager - WARNING - Crawler module not found. Running in limited mode.
+2025-07-21 02:47:47,219 - objectives_manager - WARNING - LLM integration module not found. Running in limited mode.
+2025-07-21 02:47:47,220 - objectives_manager - INFO - Starting autonomous cycle with max_cycles=1
+2025-07-21 02:47:47,220 - objectives_manager - INFO - Starting cycle 1/1
+2025-07-21 02:47:47,226 - narrative_matrix - INFO - Generated new objective: Find code around crypto devs
+2025-07-21 02:47:47,227 - objectives_manager - INFO - Generated new objective: Find code around crypto devs
+2025-07-21 02:47:47,227 - objectives_manager - INFO - Working on objective: Find code around crypto devs
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Parsed objective - Artifact type: code, Entity: crypto devs
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Completed autonomous cycle

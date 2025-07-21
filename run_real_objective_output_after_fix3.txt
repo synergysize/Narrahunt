@@ -1,0 +1,40 @@
+2025-07-21 01:53:21,910 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:53:21,911 - config_loader - INFO - .env exists: True
+2025-07-21 01:53:21,912 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:53:21,912 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:53:21,929 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 01:53:21,952 - real_objective - INFO - Running objective: Find name artifacts around Vitalik Buterin
+2025-07-21 01:53:21,953 - real_objective - INFO - Max URLs: 1, Max time: 45 minutes
+2025-07-21 01:53:21,958 - real_objective - WARNING - Using stub LLMIntegration class
+2025-07-21 01:53:21,961 - config_loader - WARNING - API key 'CLAUDE_API_KEY' not found in environment variables.
+2025-07-21 01:53:21,962 - llm_research_strategy - WARNING - No LLM API key provided. Using test mode with simulated responses.
+2025-07-21 01:53:21,969 - crawler - INFO - Crawler initialized
+2025-07-21 01:53:21,969 - real_objective - INFO - Parsed objective - Artifact type: name, Entity: Vitalik Buterin
+2025-07-21 01:53:21,971 - llm_research_strategy - WARNING - LLM integration module not found. Using simulated response.
+2025-07-21 01:53:21,972 - name_artifact_extractor - INFO - Excluding 26 entity variations
+2025-07-21 01:53:21,972 - name_artifact_extractor - INFO - Sample exclusions: vitalik buterin, vitalikes, vitaliker, buterin, mr. vitalik buterin, buterins, buterin's, buterin, vitalik, buterines, vitalik.buterin
+2025-07-21 01:53:21,973 - crawler - INFO - Processing URL: https://duckduckgo.com/html/?q=Vitalik+Buterin+social+media+profiles (depth: 0)
+2025-07-21 01:53:22,129 - crawler - INFO - Skipping URL disallowed by robots.txt: https://duckduckgo.com/html/?q=Vitalik+Buterin+social+media+profiles
+2025-07-21 01:53:22,137 - narrative_matrix - INFO - Marked objective as completed and archived to /home/computeruse/.anthropic/narrahunt_phase2/src/results/completed_objectives/20250721_015322_completed.json
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+RUNNING REAL OBJECTIVE
+================================================================================
+Generating research strategy...
+Generated 1 URLs to crawl
+Using specialized name artifact extractor
+Starting crawl...
+Processing URL 1/1: https://duckduckgo.com/html/?q=Vitalik+Buterin+social+media+profiles
+
+================================================================================
+OBJECTIVE RESULTS SUMMARY
+================================================================================
+Objective: Find name artifacts around Vitalik Buterin
+URLs processed: 1
+Total artifacts found: 0
+Narrative-worthy discoveries: 0
+
+Narrative Discoveries:
+
+Objective completed successfully.

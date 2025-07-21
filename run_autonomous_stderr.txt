@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/run_autonomous.py", line 13, in <module>
+    from objectives_manager import ObjectivesManager
+ModuleNotFoundError: No module named 'objectives_manager'

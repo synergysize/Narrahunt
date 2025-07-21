@@ -1,0 +1,22 @@
+2025-07-21 02:47:35,780 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:47:35,781 - config_loader - INFO - .env exists: True
+2025-07-21 02:47:35,783 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:47:35,783 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:47:35,821 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:47:35,855 - real_objective - INFO - Running objective: Find name artifacts around Vitalik Buterin
+2025-07-21 02:47:35,856 - real_objective - INFO - Max URLs: 3, Max time: 1 minutes
+2025-07-21 02:47:35,865 - real_objective - WARNING - Using stub LLMIntegration class
+2025-07-21 02:47:35,872 - config_loader - WARNING - API key 'CLAUDE_API_KEY' not found in environment variables.
+2025-07-21 02:47:35,873 - llm_research_strategy - WARNING - No LLM API key provided. Using test mode with simulated responses.
+2025-07-21 02:47:35,880 - crawler - INFO - Crawler initialized
+2025-07-21 02:47:35,880 - real_objective - INFO - Parsed objective - Artifact type: name, Entity: Vitalik Buterin
+2025-07-21 02:47:35,884 - llm_research_strategy - WARNING - LLM integration module not found. Using simulated response.
+2025-07-21 02:47:35,885 - name_artifact_extractor - INFO - Excluding 26 entity variations
+2025-07-21 02:47:35,885 - name_artifact_extractor - INFO - Sample exclusions: ms. vitalik buterin, vitaliks, buterining, mr. vitalik buterin, buterines, dr. vitalik buterin, vitaliking, prof. vitalik buterin, vitaliker, vitalikbuterin
+2025-07-21 02:47:35,886 - crawler - INFO - Processing URL: https://duckduckgo.com/html/?q=Vitalik+Buterin+early+work (depth: 0)
+2025-07-21 02:47:36,081 - crawler - INFO - Skipping URL disallowed by robots.txt: https://duckduckgo.com/html/?q=Vitalik+Buterin+early+work
+2025-07-21 02:47:36,082 - crawler - INFO - Processing URL: https://duckduckgo.com/html/?q=Vitalik+Buterin+background (depth: 0)
+2025-07-21 02:47:36,214 - crawler - INFO - Skipping URL disallowed by robots.txt: https://duckduckgo.com/html/?q=Vitalik+Buterin+background
+2025-07-21 02:47:36,214 - crawler - INFO - Processing URL: https://duckduckgo.com/html/?q=Vitalik+Buterin+interview (depth: 0)
+2025-07-21 02:47:36,325 - crawler - INFO - Skipping URL disallowed by robots.txt: https://duckduckgo.com/html/?q=Vitalik+Buterin+interview
+2025-07-21 02:47:36,333 - narrative_matrix - INFO - Marked objective as completed and archived to /home/computeruse/.anthropic/narrahunt_phase2/src/results/completed_objectives/20250721_024736_completed.json

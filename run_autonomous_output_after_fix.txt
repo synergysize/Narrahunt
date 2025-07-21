@@ -1,0 +1,29 @@
+2025-07-21 01:53:37,413 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:53:37,414 - config_loader - INFO - .env exists: True
+2025-07-21 01:53:37,415 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:53:37,415 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:53:37,437 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 01:53:37,452 - autonomous_runner - INFO - Starting autonomous mode with parameters: cycles=1, delay=1s, continuous=False
+2025-07-21 01:53:37,459 - objectives_manager - WARNING - Crawler module not found. Running in limited mode.
+2025-07-21 01:53:37,459 - objectives_manager - WARNING - LLM integration module not found. Running in limited mode.
+2025-07-21 01:53:37,460 - objectives_manager - INFO - Starting autonomous cycle with max_cycles=1
+2025-07-21 01:53:37,460 - objectives_manager - INFO - Starting cycle 1/1
+2025-07-21 01:53:37,464 - narrative_matrix - INFO - Generated new objective: Investigate wallet connected to companies
+2025-07-21 01:53:37,464 - objectives_manager - INFO - Generated new objective: Investigate wallet connected to companies
+2025-07-21 01:53:37,464 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 01:53:37,465 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 01:53:37,465 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 01:53:37,465 - objectives_manager - INFO - Completed autonomous cycle
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+Narrative Discovery Matrix System - Autonomous Mode
+================================================================================
+Starting with settings:
+- Maximum cycles: 1
+- Delay between cycles: 1 seconds
+- Log file: logs/autonomous_20250721_015337.log
+================================================================================
+
+Autonomous operation completed successfully.
+Check results/narratives/ directory for narrative-worthy findings.

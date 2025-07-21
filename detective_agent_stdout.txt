@@ -1,0 +1,3 @@
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+Exit code: 1

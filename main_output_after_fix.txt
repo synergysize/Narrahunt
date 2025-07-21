@@ -1,0 +1,10 @@
+2025-07-21 01:51:48,372 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:51:48,373 - config_loader - INFO - .env exists: True
+2025-07-21 01:51:48,373 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:51:48,374 - config_loader - ERROR - Please add these keys to your .env file.
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+Traceback (most recent call last):
+  File "/home/computeruse/.anthropic/narrahunt_phase2/src/main.py", line 19, in <module>
+    from modules.crawl import extract_links, is_allowed_by_robots
+ImportError: cannot import name 'is_allowed_by_robots' from 'modules.crawl' (/home/computeruse/.anthropic/narrahunt_phase2/src/modules/crawl.py)

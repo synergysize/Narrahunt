@@ -1,0 +1,92 @@
+2025-07-21 01:48:04,304 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 01:48:04,305 - config_loader - INFO - .env exists: True
+2025-07-21 01:48:04,306 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 01:48:04,306 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 01:48:04,326 - autonomous_runner - INFO - Starting autonomous mode with parameters: cycles=10, delay=300s, continuous=False
+2025-07-21 01:48:04,331 - objectives_manager - WARNING - Crawler module not found. Running in limited mode.
+2025-07-21 01:48:04,332 - objectives_manager - WARNING - LLM integration module not found. Running in limited mode.
+2025-07-21 01:48:04,332 - objectives_manager - INFO - Starting autonomous cycle with max_cycles=10
+2025-07-21 01:48:04,333 - objectives_manager - INFO - Starting cycle 1/10
+2025-07-21 01:48:04,336 - narrative_matrix - INFO - Generated new objective: Research hidden associated with institutions
+2025-07-21 01:48:04,337 - objectives_manager - INFO - Generated new objective: Research hidden associated with institutions
+2025-07-21 01:48:04,337 - objectives_manager - INFO - Working on objective: Research hidden associated with institutions
+2025-07-21 01:48:04,337 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: with institutions
+2025-07-21 01:48:04,338 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 01:48:04,338 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 01:53:04,325 - objectives_manager - INFO - Starting cycle 2/10
+2025-07-21 01:53:04,328 - objectives_manager - INFO - Loaded existing objective: Research hidden associated with institutions
+2025-07-21 01:53:04,329 - objectives_manager - INFO - Working on objective: Research hidden associated with institutions
+2025-07-21 01:53:04,329 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: with institutions
+2025-07-21 01:53:04,329 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 01:53:04,329 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 01:58:04,317 - objectives_manager - INFO - Starting cycle 3/10
+2025-07-21 01:58:04,320 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 01:58:04,320 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 01:58:04,320 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 01:58:04,321 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 01:58:04,321 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:03:04,309 - objectives_manager - INFO - Starting cycle 4/10
+2025-07-21 02:03:04,312 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 02:03:04,312 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 02:03:04,313 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 02:03:04,313 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:03:04,313 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:08:04,301 - objectives_manager - INFO - Starting cycle 5/10
+2025-07-21 02:08:04,304 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 02:08:04,304 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 02:08:04,304 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 02:08:04,305 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:08:04,305 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:13:04,293 - objectives_manager - INFO - Starting cycle 6/10
+2025-07-21 02:13:04,296 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 02:13:04,296 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 02:13:04,297 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 02:13:04,297 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:13:04,297 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:18:04,285 - objectives_manager - INFO - Starting cycle 7/10
+2025-07-21 02:18:04,288 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 02:18:04,288 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 02:18:04,288 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 02:18:04,289 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:18:04,289 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:23:04,277 - objectives_manager - INFO - Starting cycle 8/10
+2025-07-21 02:23:04,280 - objectives_manager - INFO - Loaded existing objective: Investigate wallet connected to companies
+2025-07-21 02:23:04,280 - objectives_manager - INFO - Working on objective: Investigate wallet connected to companies
+2025-07-21 02:23:04,281 - objectives_manager - INFO - Parsed objective - Artifact type: None, Entity: to companies
+2025-07-21 02:23:04,281 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:23:04,281 - narrative_matrix - INFO - Objective hit dead end: No discoveries after 35.0 minutes
+2025-07-21 02:23:04,282 - objectives_manager - INFO - Matrix determined the objective is at a dead end
+2025-07-21 02:23:04,282 - objectives_manager - INFO - Objective is exhausted, generating related objectives
+2025-07-21 02:23:04,282 - narrative_matrix - WARNING - Cannot generate follow-ups: No active objective or discoveries
+2025-07-21 02:23:04,282 - objectives_manager - INFO - No related objectives generated
+2025-07-21 02:23:04,289 - narrative_matrix - INFO - Marked objective as completed and archived to /home/computeruse/.anthropic/narrahunt_phase2/src/results/completed_objectives/20250721_022304_completed.json
+2025-07-21 02:23:04,291 - objectives_manager - INFO - Marked objective as complete: Investigate wallet connected to companies
+2025-07-21 02:23:04,294 - narrative_matrix - INFO - Generated new objective: Find code around institutions
+2025-07-21 02:23:04,294 - objectives_manager - INFO - Generated new objective: Find code around institutions
+2025-07-21 02:23:04,295 - objectives_manager - INFO - Moved to next objective: Find code around institutions
+2025-07-21 02:23:04,295 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:28:04,282 - objectives_manager - INFO - Starting cycle 9/10
+2025-07-21 02:28:04,285 - objectives_manager - INFO - Loaded existing objective: Find code around institutions
+2025-07-21 02:28:04,285 - objectives_manager - INFO - Working on objective: Find code around institutions
+2025-07-21 02:28:04,286 - objectives_manager - INFO - Parsed objective - Artifact type: code, Entity: institutions
+2025-07-21 02:28:04,286 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:28:04,286 - objectives_manager - INFO - Waiting 300 seconds before next cycle
+2025-07-21 02:33:06,975 - objectives_manager - INFO - Starting cycle 10/10
+2025-07-21 02:33:06,979 - objectives_manager - INFO - Loaded existing objective: Find code around institutions
+2025-07-21 02:33:06,979 - objectives_manager - INFO - Working on objective: Find code around institutions
+2025-07-21 02:33:06,979 - objectives_manager - INFO - Parsed objective - Artifact type: code, Entity: institutions
+2025-07-21 02:33:06,980 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:33:06,980 - objectives_manager - INFO - Completed autonomous cycle
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+Narrative Discovery Matrix System - Autonomous Mode
+================================================================================
+Starting with settings:
+- Maximum cycles: 10
+- Delay between cycles: 300 seconds
+- Log file: logs/autonomous_20250721_014804.log
+================================================================================
+
+Autonomous operation completed successfully.
+Check results/narratives/ directory for narrative-worthy findings.

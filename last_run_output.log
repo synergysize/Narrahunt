@@ -1,0 +1,191 @@
+# Narrahunt Phase 2 Test Run Logs
+
+## detective_agent.py
+```
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+
+```
+
+STDERR:
+```
+2025-07-21 02:42:32,308 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:42:32,309 - config_loader - INFO - .env exists: True
+2025-07-21 02:42:32,310 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:42:32,310 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:42:32,341 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:42:32,350 - detective_agent - INFO - Detective Agent initialized with objective: Investigate the early history of Ethereum and identify key contributors
+2025-07-21 02:42:32,350 - detective_agent - INFO - Primary entity: Ethereum
+2025-07-21 02:42:32,351 - modules.agent_core - INFO - Starting investigation with focused exploration strategy...
+2025-07-21 02:42:32,351 - modules.agent_core - INFO - Initializing research strategy...
+2025-07-21 02:42:32,355 - research_strategy - INFO - Added target to todo list: search - Ethereum history (Priority: 10)
+2025-07-21 02:42:32,356 - research_strategy - INFO - Added target to todo list: search - Ethereum origins (Priority: 9)
+2025-07-21 02:42:32,356 - research_strategy - INFO - Added target to todo list: search - Ethereum early development (Priority: 8)
+2025-07-21 02:42:32,356 - modules.agent_core - INFO - Research strategy initialized with 3 targets
+2025-07-21 02:42:32,356 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 1/50
+================================================================================
+2025-07-21 02:42:32,356 - research_strategy - INFO - Selected target: search - Ethereum history (Priority: 10)
+2025-07-21 02:42:32,356 - modules.agent_core - INFO - Executing search query: Ethereum history
+2025-07-21 02:42:32,356 - research_strategy - INFO - Marked target as complete: search - Ethereum history
+2025-07-21 02:42:32,357 - modules.agent_core - INFO - No new discoveries in iteration 1, continuing with next target
+2025-07-21 02:42:32,357 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 02:42:32,360 - modules.agent_core - INFO - State saved to /home/computeruse/.anthropic/narrahunt_phase2/discoveries/state/investigation_state.json
+2025-07-21 02:42:32,360 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 2/50
+================================================================================
+2025-07-21 02:42:32,361 - research_strategy - INFO - Selected target: search - Ethereum origins (Priority: 9)
+2025-07-21 02:42:32,361 - modules.agent_core - INFO - Executing search query: Ethereum origins
+2025-07-21 02:42:32,361 - research_strategy - INFO - Marked target as complete: search - Ethereum origins
+2025-07-21 02:42:32,361 - modules.agent_core - INFO - No new discoveries in iteration 2, continuing with next target
+2025-07-21 02:42:32,361 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 02:42:32,364 - modules.agent_core - INFO - State saved to /home/computeruse/.anthropic/narrahunt_phase2/discoveries/state/investigation_state.json
+2025-07-21 02:42:32,365 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 3/50
+================================================================================
+2025-07-21 02:42:32,365 - research_strategy - INFO - Selected target: search - Ethereum early development (Priority: 8)
+2025-07-21 02:42:32,365 - modules.agent_core - INFO - Executing search query: Ethereum early development
+2025-07-21 02:42:32,365 - research_strategy - INFO - Marked target as complete: search - Ethereum early development
+2025-07-21 02:42:32,365 - modules.agent_core - INFO - No new discoveries in iteration 3, continuing with next target
+2025-07-21 02:42:32,365 - modules.agent_core - INFO - Saving investigation state...
+2025-07-21 02:42:32,369 - modules.agent_core - INFO - State saved to /home/computeruse/.anthropic/narrahunt_phase2/discoveries/state/investigation_state.json
+2025-07-21 02:42:32,370 - modules.agent_core - INFO - 
+================================================================================
+Starting iteration 4/50
+================================================================================
+2025-07-21 02:42:32,370 - modules.agent_core - WARNING - No more targets to investigate in strategy
+2025-07-21 02:42:32,370 - modules.routing - INFO - Performing comprehensive research strategy review...
+2025-07-21 02:42:32,473 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 02:42:32,474 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 02:42:32,474 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 02:42:32,474 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 1/3)
+2025-07-21 02:42:34,630 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 02:42:34,630 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 02:42:34,630 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 02:42:34,630 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 2/3)
+2025-07-21 02:42:36,736 - modules.llm_engine - ERROR - Claude API error: 401, {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
+2025-07-21 02:42:36,737 - modules.llm_engine - WARNING - Claude API error: Claude API returned status code 401. Trying fallback.
+2025-07-21 02:42:36,737 - modules.llm_engine - ERROR - All LLM API calls failed
+2025-07-21 02:42:36,737 - modules.routing - WARNING - Failed to extract valid JSON from LLM response (attempt 3/3)
+2025-07-21 02:42:36,738 - modules.routing - ERROR - Failed to get strategy recommendations after multiple attempts
+2025-07-21 02:42:36,738 - modules.routing - INFO - Research strategy updated. New todo count: 0
+2025-07-21 02:42:36,738 - modules.agent_core - INFO - No targets in research strategy after review. Ending investigation.
+2025-07-21 02:42:36,738 - modules.agent_core - INFO - Investigation completed after 4 iterations
+2025-07-21 02:42:36,738 - modules.agent_core - INFO - Total discoveries: 0
+2025-07-21 02:42:36,738 - modules.agent_core - INFO - Generating investigation report...
+2025-07-21 02:42:36,742 - modules.agent_core - INFO - Report saved to /home/computeruse/.anthropic/narrahunt_phase2/discoveries/reports/investigation_report.json
+```
+
+## integrated_main.py
+```
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+Investigation complete. Report saved to: discoveries/report_20250721_024249.md
+```
+
+STDERR:
+```
+2025-07-21 02:42:45,400 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:42:45,400 - config_loader - INFO - .env exists: True
+2025-07-21 02:42:45,401 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:42:45,401 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:42:45,426 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:42:45,431 - __main__ - WARNING - Config file not found: None, using defaults
+2025-07-21 02:42:45,432 - __main__ - INFO - IntegratedController initialized with config: None
+2025-07-21 02:42:45,435 - detective_agent_slim - INFO - Detective Agent initialized with objective: Investigate the early history of Ethereum
+2025-07-21 02:42:45,436 - detective_agent_slim - INFO - Primary entity: Ethereum
+2025-07-21 02:42:45,436 - modules.agent_core - INFO - Starting investigation with focused exploration strategy...
+2025-07-21 02:42:45,436 - modules.agent_core - INFO - Initializing research strategy...
+2025-07-21 02:42:45,440 - research_strategy - INFO - Added target to todo list: search - Ethereum history (Priority: 10)
+2025-07-21 02:42:45,440 - research_strategy - INFO - Added target to todo list: search - Ethereum origins (Priority: 9)
+2025-07-21 02:42:45,440 - research_strategy - INFO - Added target to todo list: search - Ethereum early development (Priority: 8)
+2025-07-21 02:42:45,440 - modules.agent_core - INFO - Research strategy initialized with 3 targets
+...
+```
+
+## main.py (after fix)
+STDERR (partial):
+```
+2025-07-21 02:47:16,254 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:47:16,256 - config_loader - INFO - .env exists: True
+2025-07-21 02:47:16,257 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:47:16,257 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:47:16,293 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:47:16,303 - narrahunt.main - ERROR - Error loading source profiles: [Errno 2] No such file or directory: '/home/computeruse/.anthropic/narrahunt_phase2/source_profiles.json'
+2025-07-21 02:47:16,304 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: default
+2025-07-21 02:47:16,304 - enhanced_artifact_detector - INFO - Registered extractor for artifact type: name
+2025-07-21 02:47:16,305 - narrahunt.main - INFO - Starting crawl with max_pages=100
+2025-07-21 02:47:16,307 - narrahunt.main - INFO - Processing https://ethereum.org/en/ (depth 0)
+2025-07-21 02:47:16,446 - narrahunt.fetch - INFO - Fetching https://ethereum.org/en/
+2025-07-21 02:47:16,796 - narrahunt.fetch - INFO - Successfully fetched https://ethereum.org/en/ (475122 bytes)
+2025-07-21 02:47:16,797 - enhanced_artifact_detector - INFO - Using default extractor for URL: https://ethereum.org/en/
+2025-07-21 02:47:16,862 - narrahunt.main - INFO - Added 57 new URLs to queue from https://ethereum.org/en/
+```
+
+## run_real_objective.py
+```
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+RUNNING REAL OBJECTIVE
+================================================================================
+Generating research strategy...
+Generated 3 URLs to crawl
+Using specialized name artifact extractor
+Starting crawl...
+Processing URL 1/3: https://duckduckgo.com/html/?q=Vitalik+Buterin+early+work
+Processing URL 2/3: https://duckduckgo.com/html/?q=Vitalik+Buterin+background
+Processing URL 3/3: https://duckduckgo.com/html/?q=Vitalik+Buterin+interview
+
+================================================================================
+OBJECTIVE RESULTS SUMMARY
+================================================================================
+Objective: Find name artifacts around Vitalik Buterin
+URLs processed: 3
+Total artifacts found: 0
+Narrative-worthy discoveries: 0
+
+Narrative Discoveries:
+
+Objective completed successfully.
+```
+
+## run_autonomous.py
+```
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+.env exists: True
+================================================================================
+Narrative Discovery Matrix System - Autonomous Mode
+================================================================================
+Starting with settings:
+- Maximum cycles: 1
+- Delay between cycles: 1 seconds
+- Log file: logs/autonomous_20250721_024747.log
+================================================================================
+
+Autonomous operation completed successfully.
+Check results/narratives/ directory for narrative-worthy findings.
+```
+
+STDERR:
+```
+2025-07-21 02:47:47,165 - config_loader - INFO - Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/src/modules/.env
+2025-07-21 02:47:47,166 - config_loader - INFO - .env exists: True
+2025-07-21 02:47:47,167 - config_loader - ERROR - Missing required API keys: CLAUDE_API_KEY, OPENAI_API_KEY
+2025-07-21 02:47:47,167 - config_loader - ERROR - Please add these keys to your .env file.
+2025-07-21 02:47:47,194 - enhanced_artifact_detector - INFO - Name artifact extractor is available
+2025-07-21 02:47:47,211 - autonomous_runner - INFO - Starting autonomous mode with parameters: cycles=1, delay=1s, continuous=False
+2025-07-21 02:47:47,218 - objectives_manager - WARNING - Crawler module not found. Running in limited mode.
+2025-07-21 02:47:47,219 - objectives_manager - WARNING - LLM integration module not found. Running in limited mode.
+2025-07-21 02:47:47,220 - objectives_manager - INFO - Starting autonomous cycle with max_cycles=1
+2025-07-21 02:47:47,220 - objectives_manager - INFO - Starting cycle 1/1
+2025-07-21 02:47:47,226 - narrative_matrix - INFO - Generated new objective: Find code around crypto devs
+2025-07-21 02:47:47,227 - objectives_manager - INFO - Generated new objective: Find code around crypto devs
+2025-07-21 02:47:47,227 - objectives_manager - INFO - Working on objective: Find code around crypto devs
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Parsed objective - Artifact type: code, Entity: crypto devs
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Found 0 discoveries for this objective
+2025-07-21 02:47:47,228 - objectives_manager - INFO - Completed autonomous cycle
+```

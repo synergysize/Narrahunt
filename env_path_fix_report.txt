@@ -1,0 +1,104 @@
+# .env Path Fix Report
+
+## Overview
+
+All Python files in the project now load the .env file correctly from the project root directory:
+`/home/computeruse/.anthropic/narrahunt_phase2/.env`
+
+This ensures consistent environment variable loading regardless of which script is executed or its location within the project.
+
+## Files Changed
+
+1. `/home/computeruse/.anthropic/narrahunt_phase2/src/modules/config_loader.py`
+2. `/home/computeruse/.anthropic/narrahunt_phase2/src/modules/llm_research_strategy.py`
+3. `/home/computeruse/.anthropic/narrahunt_phase2/src/modules/verify_api_keys.py`
+
+## Changes Made
+
+### 1. config_loader.py
+
+Original:
+```python
+# Load environment variables from .env file with explicit path
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(env_path)
+```
+
+Changed to:
+```python
+from pathlib import Path
+# Load environment variables from .env file with explicit path from project root
+env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(env_path)
+```
+
+Also in `init_config()` function:
+
+Original:
+```python
+# Load environment variables with explicit path
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(env_path)
+```
+
+Changed to:
+```python
+# Load environment variables with explicit path from project root
+env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(env_path)
+```
+
+### 2. llm_research_strategy.py
+
+Added import:
+```python
+from pathlib import Path
+```
+
+Original:
+```python
+# Load environment variables
+load_dotenv()
+```
+
+Changed to:
+```python
+# Load environment variables from project root
+env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(env_path)
+```
+
+### 3. verify_api_keys.py
+
+Added import:
+```python
+from pathlib import Path
+```
+
+Added .env loading in main block:
+```python
+if __name__ == "__main__":
+    # Load environment variables from project root
+    env_path = Path(__file__).resolve().parents[2] / ".env"
+    load_dotenv(env_path)
+    logger.info(f"Loading .env from: {env_path}")
+```
+
+## Verification
+
+Ran `src/detective_agent.py` to verify the changes. The console output confirmed:
+
+```
+Loading .env from: /home/computeruse/.anthropic/narrahunt_phase2/.env
+.env exists: True
+```
+
+## Conclusion
+
+All files now use the same standardized approach to loading the .env file:
+
+1. Using `pathlib.Path` for more reliable path resolution
+2. Using `.resolve().parents[2]` to navigate up to the project root from any module
+3. Using the absolute path to ensure the .env file is loaded from the correct location regardless of where the script is executed from
+
+This approach provides consistent environment variable access across the entire project.
